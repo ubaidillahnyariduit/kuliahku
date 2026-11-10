@@ -289,10 +289,13 @@
           <!-- Right: Search + Sync Status + Quick Actions -->
           <div class="flex items-center gap-2.5 sm:gap-3 ml-auto">
             
-            <!-- Search Input -->
+            <!-- Search Input (Anti-Autofill Chrome) -->
             <div class="relative hidden sm:block">
               <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-              <input type="text" id="globalSearchInput" oninput="handleGlobalSearch(this.value)" placeholder="Cari MK, topik, berkas..." class="w-44 md:w-56 pl-9 pr-3 py-2 rounded-xl bg-white border border-slate-200 focus:border-brandTeal focus:ring-2 focus:ring-brandTeal/20 text-xs font-medium text-slate-700 outline-none transition shadow-sm">
+              <input type="search" id="globalSearchInput" name="kuliahku_filter_query" autocomplete="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" readonly onfocus="this.removeAttribute('readonly')" onblur="if(!this.value)this.setAttribute('readonly','readonly')" oninput="handleGlobalSearch(this.value)" placeholder="Cari MK, topik, berkas..." class="w-44 md:w-56 pl-9 pr-8 py-2 rounded-xl bg-white border border-slate-200 focus:border-brandTeal focus:ring-2 focus:ring-brandTeal/20 text-xs font-medium text-slate-700 outline-none transition shadow-sm">
+              <button type="button" id="btnClearGlobalSearch" onclick="clearGlobalSearch()" title="Hapus pencarian" class="hidden absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-brandCrimson flex items-center justify-center transition">
+                <i data-lucide="x" class="w-3 h-3"></i>
+              </button>
             </div>
 
             <!-- Cloud Status Pill -->
@@ -1023,8 +1026,8 @@
             <span>Ubah PIN Login (Opsional)</span>
           </h4>
           <div class="grid grid-cols-2 gap-2">
-            <input type="password" maxlength="6" id="inputPinLama" placeholder="PIN Lama" class="px-3 py-2 rounded-xl border border-slate-200 text-xs font-mono outline-none focus:border-brandCrimson">
-            <input type="password" maxlength="6" id="inputPinBaru" placeholder="PIN Baru (6 digit)" class="px-3 py-2 rounded-xl border border-slate-200 text-xs font-mono outline-none focus:border-brandCrimson">
+            <input type="password" maxlength="6" inputmode="numeric" id="inputPinLama" name="kuliahku_pin_lama" autocomplete="one-time-code" data-lpignore="true" readonly onfocus="this.removeAttribute('readonly')" placeholder="PIN Lama" class="px-3 py-2 rounded-xl border border-slate-200 text-xs font-mono outline-none focus:border-brandCrimson">
+            <input type="password" maxlength="6" inputmode="numeric" id="inputPinBaru" name="kuliahku_pin_baru" autocomplete="one-time-code" data-lpignore="true" readonly onfocus="this.removeAttribute('readonly')" placeholder="PIN Baru (6 digit)" class="px-3 py-2 rounded-xl border border-slate-200 text-xs font-mono outline-none focus:border-brandCrimson">
           </div>
         </div>
 
@@ -1111,7 +1114,7 @@
           </div>
           <div>
             <label class="block font-bold text-slate-700 mb-1">Nomor WA Tujuan</label>
-            <input type="text" id="inputWaPhone" placeholder="Contoh: 081234567890" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 font-mono text-slate-800 outline-none focus:border-brandTeal">
+            <input type="text" id="inputWaPhone" name="kuliahku_wa_phone" autocomplete="off" data-lpignore="true" placeholder="Contoh: 081234567890" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 font-mono text-slate-800 outline-none focus:border-brandTeal">
             <p id="waMaskedPhoneHint" class="text-[10px] text-brandTeal font-semibold mt-1 hidden"></p>
           </div>
         </div>
@@ -1123,7 +1126,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div id="waApiKeyCol">
             <label class="block font-bold text-slate-700 mb-1" id="labelWaApiKey">API Key / Token</label>
-            <input type="password" id="inputWaApiKey" placeholder="Masukkan API Key / Token" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 font-mono text-slate-800 outline-none focus:border-brandTeal">
+            <input type="password" id="inputWaApiKey" name="kuliahku_wa_apikey" autocomplete="new-password" data-lpignore="true" data-1p-ignore="true" readonly onfocus="this.removeAttribute('readonly')" placeholder="Masukkan API Key / Token" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 font-mono text-slate-800 outline-none focus:border-brandTeal">
             <p id="waKeySavedHint" class="text-[10px] text-brandTeal font-semibold mt-1 hidden">Token sudah tersimpan aman di backend. Kosongkan jika tidak ingin mengganti.</p>
           </div>
           <div id="waWebhookRow" class="hidden sm:col-span-2">
@@ -1418,6 +1421,14 @@
 
     function unlockApp() {
       AppState.isLoggedIn = true;
+      AppState.searchQuery = '';
+      var searchEl = document.getElementById('globalSearchInput');
+      if (searchEl) {
+        searchEl.setAttribute('readonly', 'readonly');
+        searchEl.value = '';
+      }
+      var clearBtn = document.getElementById('btnClearGlobalSearch');
+      if (clearBtn) clearBtn.classList.add('hidden');
       document.getElementById('loginScreen').classList.add('hidden');
       document.getElementById('appShell').classList.remove('hidden');
 
@@ -1616,6 +1627,23 @@
 
     function handleGlobalSearch(val) {
       AppState.searchQuery = String(val || '').trim().toLowerCase();
+      var clearBtn = document.getElementById('btnClearGlobalSearch');
+      if (clearBtn) {
+        if (AppState.searchQuery.length > 0) clearBtn.classList.remove('hidden');
+        else clearBtn.classList.add('hidden');
+      }
+      renderActiveView();
+    }
+
+    function clearGlobalSearch() {
+      AppState.searchQuery = '';
+      var searchEl = document.getElementById('globalSearchInput');
+      if (searchEl) {
+        searchEl.setAttribute('readonly', 'readonly');
+        searchEl.value = '';
+      }
+      var clearBtn = document.getElementById('btnClearGlobalSearch');
+      if (clearBtn) clearBtn.classList.add('hidden');
       renderActiveView();
     }
 
@@ -1710,6 +1738,15 @@
       }
 
       if (pending.length === 0) {
+        if (AppState.searchQuery) {
+          subEl.innerText = 'Filter pencarian "' + AppState.searchQuery + '" aktif';
+          listEl.innerHTML =
+            '<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-4 py-3 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-900">' +
+              '<span>Tidak ada tugas pending yang cocok dengan pencarian <b>"' + escapeHtml(AppState.searchQuery) + '"</b>.</span>' +
+              '<button onclick="clearGlobalSearch()" class="px-3 py-1 rounded-lg bg-white border border-amber-300 font-bold text-amber-800 hover:bg-amber-100 transition shrink-0">Reset Pencarian</button>' +
+            '</div>';
+          return;
+        }
         subEl.innerText = 'Semua tugas aktif sudah beres (default pertemuan tidak ada tugas)';
         listEl.innerHTML =
           '<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-4 py-3 rounded-2xl bg-emerald-50/70 border border-emerald-200/70 text-xs text-emerald-900">' +
@@ -1901,8 +1938,13 @@
       gridWrap.innerHTML = '';
 
       if (list.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" class="py-8 text-center text-slate-400">Belum ada mata kuliah untuk semester ini.</td></tr>';
-        gridWrap.innerHTML = '<div class="col-span-full py-8 text-center text-xs text-slate-400">Belum ada mata kuliah yang cocok.</div>';
+        if (AppState.searchQuery) {
+          tbody.innerHTML = '<tr><td colspan="4" class="py-8 text-center text-slate-500">Tidak ada mata kuliah cocok dengan <b>"' + escapeHtml(AppState.searchQuery) + '"</b>. <button onclick="clearGlobalSearch()" class="ml-2 px-3 py-1 rounded-lg bg-brandTeal text-white font-bold text-[11px]">Reset Pencarian</button></td></tr>';
+          gridWrap.innerHTML = '<div class="col-span-full py-8 text-center text-xs text-slate-500 space-y-2"><p>Tidak ada mata kuliah cocok dengan <b>"' + escapeHtml(AppState.searchQuery) + '"</b>.</p><button onclick="clearGlobalSearch()" class="px-4 py-1.5 rounded-xl bg-brandTeal text-white font-bold text-xs">Reset Pencarian</button></div>';
+        } else {
+          tbody.innerHTML = '<tr><td colspan="4" class="py-8 text-center text-slate-400">Belum ada mata kuliah untuk semester ini.</td></tr>';
+          gridWrap.innerHTML = '<div class="col-span-full py-8 text-center text-xs text-slate-400">Belum ada mata kuliah yang cocok.</div>';
+        }
         return;
       }
 
@@ -2056,7 +2098,15 @@
 
       var list = getFilteredCourses();
       if (list.length === 0) {
-        container.innerHTML = '<div class="col-span-full card-pro p-8 text-center text-xs text-slate-400">Tidak ada mata kuliah yang ditemukan.</div>';
+        if (AppState.searchQuery) {
+          container.innerHTML =
+            '<div class="col-span-full card-pro p-8 text-center space-y-3">' +
+              '<p class="text-xs text-slate-500">Tidak ada mata kuliah yang cocok dengan kata kunci <b>"' + escapeHtml(AppState.searchQuery) + '"</b>.</p>' +
+              '<button onclick="clearGlobalSearch()" class="px-4 py-2 rounded-xl bg-brandTeal hover:bg-emerald-700 text-white font-bold text-xs transition shadow-sm">Reset Pencarian</button>' +
+            '</div>';
+        } else {
+          container.innerHTML = '<div class="col-span-full card-pro p-8 text-center text-xs text-slate-400">Tidak ada mata kuliah untuk semester ini.</div>';
+        }
         return;
       }
 
@@ -2236,8 +2286,10 @@
         container.innerHTML =
           '<div class="card-pro p-8 text-center space-y-2">' +
             '<div class="w-12 h-12 rounded-2xl bg-emerald-50 text-brandTeal flex items-center justify-center mx-auto"><i data-lucide="check-circle-2" class="w-6 h-6"></i></div>' +
-            '<h4 class="text-sm font-extrabold text-slate-800">Tidak Ada Tugas Pada Filter Ini</h4>' +
-            '<p class="text-xs text-slate-500">Default seluruh pertemuan adalah <b>Tidak Ada Tugas</b>. Buka Mata Kuliah &rarr; klik <b>+ Tandai Ada Tugas</b> jika dosen memberi tugas baru.</p>' +
+            '<h4 class="text-sm font-extrabold text-slate-800">' + (AppState.searchQuery ? ('Tidak Ada Tugas Untuk "' + escapeHtml(AppState.searchQuery) + '"') : 'Tidak Ada Tugas Pada Filter Ini') + '</h4>' +
+            (AppState.searchQuery
+              ? '<button onclick="clearGlobalSearch()" class="mt-2 px-4 py-2 rounded-xl bg-brandTeal hover:bg-emerald-700 text-white font-bold text-xs transition">Reset Pencarian</button>'
+              : '<p class="text-xs text-slate-500">Default seluruh pertemuan adalah <b>Tidak Ada Tugas</b>. Buka Mata Kuliah &rarr; klik <b>+ Tandai Ada Tugas</b> jika dosen memberi tugas baru.</p>') +
           '</div>';
       } else {
         var html = '';
@@ -2334,7 +2386,11 @@
       });
 
       if (rows.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="py-10 text-center text-slate-400">Belum ada berkas yang sesuai filter.</td></tr>';
+        if (AppState.searchQuery) {
+          tbody.innerHTML = '<tr><td colspan="5" class="py-10 text-center text-slate-500">Tidak ada berkas cocok dengan <b>"' + escapeHtml(AppState.searchQuery) + '"</b>. <button onclick="clearGlobalSearch()" class="ml-2 px-3 py-1 rounded-lg bg-brandTeal text-white font-bold text-[11px]">Reset Pencarian</button></td></tr>';
+        } else {
+          tbody.innerHTML = '<tr><td colspan="5" class="py-10 text-center text-slate-400">Belum ada berkas yang sesuai filter.</td></tr>';
+        }
         return;
       }
 
@@ -2381,7 +2437,15 @@
       });
 
       if (items.length === 0) {
-        grid.innerHTML = '<div class="col-span-full card-pro p-10 text-center text-xs text-slate-400">Belum ada catatan materi kuliah yang tersimpan.</div>';
+        if (AppState.searchQuery) {
+          grid.innerHTML =
+            '<div class="col-span-full card-pro p-10 text-center space-y-3">' +
+              '<p class="text-xs text-slate-500">Tidak ada catatan yang cocok dengan kata kunci <b>"' + escapeHtml(AppState.searchQuery) + '"</b>.</p>' +
+              '<button onclick="clearGlobalSearch()" class="px-4 py-2 rounded-xl bg-brandTeal hover:bg-emerald-700 text-white font-bold text-xs transition">Reset Pencarian</button>' +
+            '</div>';
+        } else {
+          grid.innerHTML = '<div class="col-span-full card-pro p-10 text-center text-xs text-slate-400">Belum ada catatan materi kuliah yang tersimpan.</div>';
+        }
         return;
       }
 
@@ -2779,8 +2843,12 @@
       document.getElementById('inputEditFakultas').value = p.fakultas || '';
       document.getElementById('inputEditFoto').value = p.fotoUrl || '';
       document.getElementById('editAvatarPreview').src = normalizeDriveImageUrl(p.fotoUrl);
-      document.getElementById('inputPinLama').value = '';
-      document.getElementById('inputPinBaru').value = '';
+      var pinLamaEl = document.getElementById('inputPinLama');
+      var pinBaruEl = document.getElementById('inputPinBaru');
+      pinLamaEl.setAttribute('readonly', 'readonly');
+      pinBaruEl.setAttribute('readonly', 'readonly');
+      pinLamaEl.value = '';
+      pinBaruEl.value = '';
       document.getElementById('modalProfile').classList.remove('hidden');
       lucide.createIcons();
     }
@@ -2983,7 +3051,9 @@
       var st = AppState.waStatus || {};
       document.getElementById('inputWaProvider').value = st.provider || 'textmebot';
       document.getElementById('inputWaPhone').value = '';
-      document.getElementById('inputWaApiKey').value = '';
+      var apiKeyEl = document.getElementById('inputWaApiKey');
+      apiKeyEl.setAttribute('readonly', 'readonly');
+      apiKeyEl.value = '';
       document.getElementById('inputWaWebhookUrl').value = '';
       document.getElementById('inputWaIntro').value = st.introText || "Bro, tugas ini dan ini belum, Jum'at bentar lagi loh!";
       document.getElementById('inputWaScheduleEnabled').checked = Boolean(st.scheduleEnabled);
