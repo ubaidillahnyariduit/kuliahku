@@ -1,0 +1,2434 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kuliahku - Portal Akademik UINSSC</title>
+  
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide SVG Icons -->
+  <script src="https://unpkg.com/lucide@0.468.0"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandAmber: '#EAA646',
+            brandTeal: '#238B6E',
+            brandCrimson: '#C42B5B',
+            brandSlate: '#CFD1D4',
+            brandMint: '#7FE0BF',
+            darkCharcoal: '#232327',
+            canvasBg: '#F0F2F5'
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #E2E8F0; }
+    ::-webkit-scrollbar-thumb { background: #94A3B8; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #64748B; }
+
+    .card-pro {
+      background: #FFFFFF;
+      border-radius: 1rem;
+      box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.05), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
+      border: 1px solid rgba(207, 209, 212, 0.45);
+    }
+
+    .card-pro-hover {
+      transition: all 0.2s ease;
+    }
+    .card-pro-hover:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px -6px rgba(15, 23, 42, 0.1), 0 4px 8px -2px rgba(15, 23, 42, 0.05);
+    }
+
+    .floating-icon-box {
+      box-shadow: 0 8px 20px -4px rgba(15, 23, 42, 0.28);
+    }
+
+    .pin-dot {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .pin-dot.filled {
+      background-color: #C42B5B;
+      border-color: #C42B5B;
+      transform: scale(1.18);
+    }
+
+    /* Fluid table typography for mobile screens */
+    @media (max-width: 640px) {
+      .fluid-table th, .fluid-table td {
+        font-size: 11px;
+        padding-left: 0.65rem;
+        padding-right: 0.65rem;
+      }
+    }
+  </style>
+</head>
+<body class="bg-canvasBg text-slate-800 font-sans antialiased min-h-screen selection:bg-brandMint selection:text-slate-900">
+
+  <!-- ============================================================================== -->
+  <!-- 1. LAYAR KUNCI & LOGIN PIN PERSONAL (TERINTEGRASI BACKEND) -->
+  <!-- ============================================================================== -->
+  <div id="loginScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-[#1B1B1F] via-[#232327] to-[#13382E] p-4 transition-opacity duration-300">
+    <div class="w-full max-w-sm bg-white rounded-3xl p-6 sm:p-8 shadow-2xl text-center relative overflow-hidden border border-slate-200">
+      
+      <!-- 5-Color Accent Top Strip -->
+      <div class="absolute top-0 left-0 right-0 h-1.5 flex">
+        <div class="flex-1 bg-brandAmber"></div>
+        <div class="flex-1 bg-brandTeal"></div>
+        <div class="flex-1 bg-brandCrimson"></div>
+        <div class="flex-1 bg-brandSlate"></div>
+        <div class="flex-1 bg-brandMint"></div>
+      </div>
+      
+      <!-- Logo UINSSC -->
+      <div class="flex justify-center mb-4 mt-2">
+        <div class="w-20 h-20 p-2.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-center shadow-inner">
+          <img src="assets/logo-uinssc.png" alt="Logo UINSSC" class="max-h-full max-w-full object-contain" onerror="this.style.display='none'; document.getElementById('loginLogoFallback').classList.remove('hidden');">
+          <i id="loginLogoFallback" data-lucide="graduation-cap" class="w-10 h-10 text-brandTeal hidden"></i>
+        </div>
+      </div>
+
+      <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">KULIAHKU</h1>
+      <p class="text-[11px] font-bold text-brandTeal tracking-wider uppercase mt-0.5">UIN Siber Syekh Nurjati Cirebon</p>
+      <p class="text-xs text-slate-500 mt-2" id="loginSubtitle">Masukkan 6 Digit PIN Akademik Anda</p>
+
+      <!-- PIN Indicator Dots -->
+      <div class="flex justify-center items-center gap-3 my-6">
+        <div class="pin-dot w-4 h-4 rounded-full border-2 border-slate-300 bg-white" id="dot0"></div>
+        <div class="pin-dot w-4 h-4 rounded-full border-2 border-slate-300 bg-white" id="dot1"></div>
+        <div class="pin-dot w-4 h-4 rounded-full border-2 border-slate-300 bg-white" id="dot2"></div>
+        <div class="pin-dot w-4 h-4 rounded-full border-2 border-slate-300 bg-white" id="dot3"></div>
+        <div class="pin-dot w-4 h-4 rounded-full border-2 border-slate-300 bg-white" id="dot4"></div>
+        <div class="pin-dot w-4 h-4 rounded-full border-2 border-slate-300 bg-white" id="dot5"></div>
+      </div>
+
+      <!-- Loading Indicator saat verifikasi ke Google Apps Script -->
+      <div id="loginVerifying" class="hidden mb-4 flex items-center justify-center gap-2 text-xs font-bold text-brandTeal">
+        <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>
+        <span>Memverifikasi PIN & memuat data...</span>
+      </div>
+
+      <!-- Numeric Keypad -->
+      <div id="pinKeypad" class="grid grid-cols-3 gap-2.5 max-w-[240px] mx-auto">
+        <button type="button" onclick="pressPin('1')" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-lg font-bold text-slate-700 transition">1</button>
+        <button type="button" onclick="pressPin('2')" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-lg font-bold text-slate-700 transition">2</button>
+        <button type="button" onclick="pressPin('3')" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-lg font-bold text-slate-700 transition">3</button>
+        <button type="button" onclick="pressPin('4')" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-lg font-bold text-slate-700 transition">4</button>
+        <button type="button" onclick="pressPin('5')" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-lg font-bold text-slate-700 transition">5</button>
+        <button type="button" onclick="pressPin('6')" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-lg font-bold text-slate-700 transition">6</button>
+        <button type="button" onclick="pressPin('7')" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-lg font-bold text-slate-700 transition">7</button>
+        <button type="button" onclick="pressPin('8')" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-lg font-bold text-slate-700 transition">8</button>
+        <button type="button" onclick="pressPin('9')" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-lg font-bold text-slate-700 transition">9</button>
+        <button type="button" onclick="backspacePin()" title="Hapus 1 digit" class="h-12 rounded-2xl bg-rose-50 hover:bg-rose-100 active:scale-95 text-sm font-semibold text-brandCrimson transition flex items-center justify-center">
+          <i data-lucide="delete" class="w-5 h-5"></i>
+        </button>
+        <button type="button" onclick="pressPin('0')" class="h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-lg font-bold text-slate-700 transition">0</button>
+        <button type="button" onclick="submitPin()" title="Masuk" class="h-12 rounded-2xl bg-brandCrimson hover:bg-rose-700 active:scale-95 text-white font-bold transition flex items-center justify-center shadow-md shadow-brandCrimson/25">
+          <i data-lucide="arrow-right" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="mt-5 pt-4 border-t border-slate-100 flex items-center justify-center gap-1.5 text-[11px] text-slate-400 font-medium">
+        <i data-lucide="shield-check" class="w-3.5 h-3.5 text-brandTeal"></i>
+        <span>Terhubung Langsung ke Google Sheets & Drive</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================================== -->
+  <!-- 2. APPLICATION SHELL (FLOATING DARK SIDEBAR + MAIN CANVAS) -->
+  <!-- ============================================================================== -->
+  <div id="appShell" class="hidden min-h-screen">
+
+    <!-- Mobile Drawer Backdrop -->
+    <div id="sidebarBackdrop" onclick="toggleSidebar(false)" class="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-sm hidden lg:hidden"></div>
+
+    <!-- FLOATING DARK CHARCOAL SIDEBAR (Material Dashboard Pro Style) -->
+    <aside id="appSidebar" class="fixed inset-y-4 left-4 z-50 w-64 rounded-2xl bg-gradient-to-b from-[#2F2F35] via-[#232327] to-[#1A1A1D] text-white shadow-2xl flex flex-col justify-between transition-transform duration-300 -translate-x-[120%] lg:translate-x-0 border border-white/10">
+      
+      <!-- Top Brand & Navigation -->
+      <div class="flex flex-col flex-1 overflow-y-auto px-3.5 py-5">
+        
+        <!-- Brand Header -->
+        <div class="flex items-center justify-between px-2 pb-4 border-b border-white/10">
+          <div class="flex items-center gap-3 cursor-pointer" onclick="switchView('dashboard')">
+            <div class="w-10 h-10 rounded-xl bg-white p-1.5 flex items-center justify-center shadow-md shrink-0">
+              <img src="assets/logo-uinssc.png" alt="UINSSC" class="max-h-full max-w-full object-contain" onerror="this.style.display='none';">
+            </div>
+            <div class="leading-tight">
+              <h2 class="text-sm font-extrabold tracking-tight text-white">KULIAHKU</h2>
+              <p class="text-[10px] font-semibold text-brandMint tracking-wide">UINSSC Cirebon</p>
+            </div>
+          </div>
+          <button onclick="toggleSidebar(false)" class="lg:hidden w-7 h-7 rounded-lg bg-white/10 text-slate-300 flex items-center justify-center">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- Menu Groups -->
+        <nav class="mt-5 space-y-5 flex-1">
+          
+          <!-- Group 1: Menu Utama -->
+          <div>
+            <p class="px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Menu Utama</p>
+            <div class="space-y-1">
+              <button onclick="switchView('dashboard')" id="nav-dashboard" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all">
+                <i data-lucide="layout-dashboard" class="w-4 h-4 shrink-0"></i>
+                <span>Dashboard</span>
+              </button>
+              <button onclick="switchView('courses')" id="nav-courses" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all">
+                <i data-lucide="book-open-check" class="w-4 h-4 shrink-0"></i>
+                <span>Mata Kuliah</span>
+              </button>
+              <button onclick="switchView('files')" id="nav-files" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all">
+                <i data-lucide="folder-archive" class="w-4 h-4 shrink-0"></i>
+                <span>Arsip Berkas Drive</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Group 2: Akademik -->
+          <div>
+            <p class="px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Akademik</p>
+            <div class="space-y-1">
+              <button onclick="switchView('notes')" id="nav-notes" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all">
+                <i data-lucide="notebook-pen" class="w-4 h-4 shrink-0"></i>
+                <span>Catatan Dosen</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Group 3: Akun Mahasiswa -->
+          <div>
+            <p class="px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Akun &amp; Sistem</p>
+            <div class="space-y-1">
+              <button onclick="openProfileModal(); toggleSidebar(false);" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-300 hover:bg-white/10 hover:text-white transition-all">
+                <i data-lucide="user-circle-2" class="w-4 h-4 shrink-0"></i>
+                <span>Profil Mahasiswa</span>
+              </button>
+              <button onclick="openApiConfigModal(); toggleSidebar(false);" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-300 hover:bg-white/10 hover:text-white transition-all">
+                <i data-lucide="cloud-cog" class="w-4 h-4 shrink-0"></i>
+                <span>Integrasi Cloud</span>
+              </button>
+            </div>
+          </div>
+
+        </nav>
+
+        <!-- Sidebar Bottom Action Buttons (Matching Sample Composition) -->
+        <div class="pt-4 mt-4 border-t border-white/10 space-y-2">
+          <button onclick="refreshData(true); toggleSidebar(false);" class="w-full py-2.5 px-3 rounded-xl bg-brandTeal hover:bg-emerald-600 active:scale-95 text-white text-[11px] font-bold uppercase tracking-wider shadow-lg shadow-emerald-950/40 transition flex items-center justify-center gap-2">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+            <span>Sinkronkan Data</span>
+          </button>
+          <button onclick="lockApp()" class="w-full py-2.5 px-3 rounded-xl bg-brandCrimson hover:bg-rose-700 active:scale-95 text-white text-[11px] font-bold uppercase tracking-wider shadow-lg shadow-rose-950/40 transition flex items-center justify-center gap-2">
+            <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+            <span>Sign Out / Kunci</span>
+          </button>
+        </div>
+
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT WORKSPACE -->
+    <div class="w-full lg:pl-[18rem] min-h-screen flex flex-col">
+
+      <!-- TOP MINIMALIST HEADER BAR -->
+      <header class="sticky top-0 z-30 bg-canvasBg/85 backdrop-blur-md px-4 sm:px-8 py-4">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+          
+          <!-- Left: Mobile Toggle + Breadcrumb & Page Title -->
+          <div class="flex items-center gap-3">
+            <button onclick="toggleSidebar(true)" class="lg:hidden w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-700 shadow-sm">
+              <i data-lucide="menu" class="w-5 h-5"></i>
+            </button>
+            <div>
+              <nav class="flex items-center gap-1.5 text-xs text-slate-400 font-medium">
+                <i data-lucide="home" class="w-3 h-3"></i>
+                <span>/</span>
+                <span id="breadcrumbParent" class="text-slate-500">Halaman</span>
+                <span>/</span>
+                <span id="breadcrumbCurrent" class="text-slate-700 font-semibold">Dashboard</span>
+              </nav>
+              <h1 id="pageMainTitle" class="text-base sm:text-lg font-extrabold text-slate-800 tracking-tight leading-tight">Dashboard Akademik</h1>
+            </div>
+          </div>
+
+          <!-- Right: Search + Sync Status + Quick Actions -->
+          <div class="flex items-center gap-2.5 sm:gap-3 ml-auto">
+            
+            <!-- Search Input -->
+            <div class="relative hidden sm:block">
+              <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+              <input type="text" id="globalSearchInput" oninput="handleGlobalSearch(this.value)" placeholder="Cari MK, topik, berkas..." class="w-44 md:w-56 pl-9 pr-3 py-2 rounded-xl bg-white border border-slate-200 focus:border-brandTeal focus:ring-2 focus:ring-brandTeal/20 text-xs font-medium text-slate-700 outline-none transition shadow-sm">
+            </div>
+
+            <!-- Cloud Status Pill -->
+            <button onclick="openApiConfigModal()" id="btnSyncStatus" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 transition shadow-sm">
+              <span id="syncDot" class="w-2 h-2 rounded-full bg-amber-400"></span>
+              <span id="syncStatusText" class="hidden md:inline">Menghubungkan...</span>
+            </button>
+
+            <!-- Profile Pill -->
+            <button onclick="openProfileModal()" title="Detail Profil Mahasiswa" class="flex items-center gap-2 p-1 pr-2.5 rounded-xl bg-white border border-slate-200 hover:border-brandTeal transition shadow-sm">
+              <img id="navAvatar" src="assets/logo-uinssc.png" onerror="this.onerror=null; this.src='assets/logo-uinssc.png';" alt="Foto" class="w-7 h-7 rounded-lg object-cover bg-slate-200">
+              <span id="navNamaShort" class="text-xs font-bold text-slate-700 hidden xl:inline max-w-[110px] truncate">Profil</span>
+            </button>
+
+            <!-- Sign Out Button -->
+            <button onclick="lockApp()" class="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-brandCrimson hover:bg-white transition">
+              <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+              <span>Sign Out</span>
+            </button>
+
+          </div>
+        </div>
+      </header>
+
+      <!-- DYNAMIC LOADING BAR (Ketika Sync Cloud) -->
+      <div id="globalLoadingOverlay" class="hidden px-4 sm:px-8 pb-2">
+        <div class="max-w-7xl mx-auto bg-white border border-brandMint/60 rounded-xl px-4 py-2.5 flex items-center justify-between shadow-sm">
+          <div class="flex items-center gap-2.5 text-xs font-semibold text-slate-700">
+            <i data-lucide="loader-2" class="w-4 h-4 animate-spin text-brandTeal"></i>
+            <span>Menyinkronkan data asli dari Google Sheets &amp; Google Drive...</span>
+          </div>
+          <span class="text-[10px] font-bold text-brandTeal uppercase tracking-wider">Live Sync</span>
+        </div>
+      </div>
+
+      <!-- MAIN VIEWS CONTAINER -->
+      <main class="flex-1 px-4 sm:px-8 pb-12 pt-2">
+        <div class="max-w-7xl mx-auto space-y-8">
+
+          <!-- ================================================================== -->
+          <!-- VIEW 1: DASHBOARD PRO (KOMPOSISI REFERENSI + 5 PALET WARNA) -->
+          <!-- ================================================================== -->
+          <div id="viewDashboard" class="space-y-8">
+
+            <!-- ROW 1: 4 KARTU METRIK IKON MENGAMBANG -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 pt-4">
+              
+              <!-- Stat 1: Mata Kuliah (Dark Charcoal) -->
+              <div class="card-pro p-5 relative">
+                <div class="flex justify-between items-start">
+                  <div class="w-14 h-14 rounded-xl bg-gradient-to-tr from-[#1B1B1F] to-[#3A3A40] text-white floating-icon-box -mt-9 flex items-center justify-center shrink-0">
+                    <i data-lucide="book-open" class="w-6 h-6"></i>
+                  </div>
+                  <div class="text-right">
+                    <p class="text-xs font-medium text-slate-500">Mata Kuliah</p>
+                    <h3 id="statTotalMK" class="text-2xl font-extrabold text-slate-800 mt-0.5">0</h3>
+                  </div>
+                </div>
+                <div class="border-t border-slate-100 mt-4 pt-3 flex items-center gap-1.5 text-xs">
+                  <span id="statTotalSKS" class="font-bold text-brandTeal">0 SKS</span>
+                  <span class="text-slate-500">aktif pada semester berjalan</span>
+                </div>
+              </div>
+
+              <!-- Stat 2: Tugas Selesai (Raspberry Crimson) -->
+              <div class="card-pro p-5 relative">
+                <div class="flex justify-between items-start">
+                  <div class="w-14 h-14 rounded-xl bg-gradient-to-tr from-[#A91E4A] to-[#C42B5B] text-white floating-icon-box -mt-9 flex items-center justify-center shrink-0">
+                    <i data-lucide="check-circle-2" class="w-6 h-6"></i>
+                  </div>
+                  <div class="text-right">
+                    <p class="text-xs font-medium text-slate-500">Tugas Selesai</p>
+                    <h3 id="statTugasSelesai" class="text-2xl font-extrabold text-slate-800 mt-0.5">0</h3>
+                  </div>
+                </div>
+                <div class="border-t border-slate-100 mt-4 pt-3 flex items-center gap-1.5 text-xs">
+                  <span id="statTugasPending" class="font-bold text-brandCrimson">0 pending</span>
+                  <span class="text-slate-500" id="statTotalPertemuanLabel">dari 0 pertemuan</span>
+                </div>
+              </div>
+
+              <!-- Stat 3: Modul & Berkas Drive (Emerald Pine) -->
+              <div class="card-pro p-5 relative">
+                <div class="flex justify-between items-start">
+                  <div class="w-14 h-14 rounded-xl bg-gradient-to-tr from-[#1B6E57] to-[#238B6E] text-white floating-icon-box -mt-9 flex items-center justify-center shrink-0">
+                    <i data-lucide="folder-kanban" class="w-6 h-6"></i>
+                  </div>
+                  <div class="text-right">
+                    <p class="text-xs font-medium text-slate-500">Berkas di Drive</p>
+                    <h3 id="statTotalBerkas" class="text-2xl font-extrabold text-slate-800 mt-0.5">0</h3>
+                  </div>
+                </div>
+                <div class="border-t border-slate-100 mt-4 pt-3 flex items-center gap-1.5 text-xs">
+                  <span id="statTotalModul" class="font-bold text-brandTeal">0 modul</span>
+                  <span class="text-slate-500" id="statTotalTugasFile">&amp; 0 tugas tersimpan</span>
+                </div>
+              </div>
+
+              <!-- Stat 4: Progres & Catatan (Warm Honey Amber) -->
+              <div class="card-pro p-5 relative">
+                <div class="flex justify-between items-start">
+                  <div class="w-14 h-14 rounded-xl bg-gradient-to-tr from-[#D48A29] to-[#EAA646] text-white floating-icon-box -mt-9 flex items-center justify-center shrink-0">
+                    <i data-lucide="sparkles" class="w-6 h-6"></i>
+                  </div>
+                  <div class="text-right">
+                    <p class="text-xs font-medium text-slate-500">Progres Tugas</p>
+                    <h3 id="statProgressPct" class="text-2xl font-extrabold text-slate-800 mt-0.5">0%</h3>
+                  </div>
+                </div>
+                <div class="border-t border-slate-100 mt-4 pt-3 flex items-center gap-1.5 text-xs">
+                  <span id="statTotalCatatan" class="font-bold text-amber-600">0 catatan</span>
+                  <span class="text-slate-500">resume materi terisi</span>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- ROW 2: 3 KARTU VISUAL ANALITIK (OVERLAPPING COLORED CHART HEADERS) -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-4">
+              
+              <!-- Chart Card 1: Raspberry Crimson (Bar Chart Modul/Berkas per MK) -->
+              <div class="card-pro p-5 flex flex-col justify-between">
+                <div>
+                  <div class="rounded-xl bg-gradient-to-tr from-[#A91E4A] to-[#C42B5B] p-4 -mt-9 floating-icon-box text-white">
+                    <div id="chartBarsMK" class="h-36 flex items-end justify-between gap-2 px-2 pt-3">
+                      <!-- SVG/Bar Dinamis dari Data Asli -->
+                    </div>
+                  </div>
+                  <div class="mt-5">
+                    <h4 class="text-sm font-bold text-slate-800">Sebaran Berkas per MK</h4>
+                    <p class="text-xs text-slate-500 mt-0.5">Jumlah modul &amp; tugas pada masing-masing mata kuliah</p>
+                  </div>
+                </div>
+                <div class="border-t border-slate-100 mt-4 pt-3 flex items-center gap-1.5 text-[11px] text-slate-400 font-medium">
+                  <i data-lucide="hard-drive" class="w-3.5 h-3.5 text-brandCrimson"></i>
+                  <span>Tersinkron langsung dari tab BerkasKuliah</span>
+                </div>
+              </div>
+
+              <!-- Chart Card 2: Emerald Pine (Line Chart Aktivitas Pertemuan P1-P16) -->
+              <div class="card-pro p-5 flex flex-col justify-between">
+                <div>
+                  <div class="rounded-xl bg-gradient-to-tr from-[#1B6E57] to-[#238B6E] p-4 -mt-9 floating-icon-box text-white">
+                    <div id="chartLinePertemuan" class="h-36 w-full flex items-center justify-center">
+                      <!-- SVG Line Chart Dinamis -->
+                    </div>
+                  </div>
+                  <div class="mt-5">
+                    <h4 class="text-sm font-bold text-slate-800">Aktivitas Pertemuan (P1–P16)</h4>
+                    <p class="text-xs text-slate-500 mt-0.5">Kelengkapan file &amp; catatan tiap pekan perkuliahan</p>
+                  </div>
+                </div>
+                <div class="border-t border-slate-100 mt-4 pt-3 flex items-center gap-1.5 text-[11px] text-slate-400 font-medium">
+                  <i data-lucide="activity" class="w-3.5 h-3.5 text-brandTeal"></i>
+                  <span>Grafik otomatis dari 16 pertemuan</span>
+                </div>
+              </div>
+
+              <!-- Chart Card 3: Dark Charcoal + Fresh Mint (Ringkasan Status Akademik) -->
+              <div class="card-pro p-5 flex flex-col justify-between">
+                <div>
+                  <div class="rounded-xl bg-gradient-to-tr from-[#1A1A1E] to-[#323238] p-4 -mt-9 floating-icon-box text-white">
+                    <div id="chartMintStatus" class="h-36 w-full flex items-center justify-center">
+                      <!-- SVG Mint Chart Dinamis -->
+                    </div>
+                  </div>
+                  <div class="mt-5">
+                    <h4 class="text-sm font-bold text-slate-800">Kesiapan &amp; Status Tugas</h4>
+                    <p class="text-xs text-slate-500 mt-0.5">Perbandingan tugas selesai, pending, dan catatan dosen</p>
+                  </div>
+                </div>
+                <div class="border-t border-slate-100 mt-4 pt-3 flex items-center gap-1.5 text-[11px] text-slate-400 font-medium">
+                  <i data-lucide="clock" class="w-3.5 h-3.5 text-brandMint"></i>
+                  <span id="lastSyncTimeText">Menunggu sinkronisasi...</span>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- ROW 3: ASYMMETRIC SPLIT (8 COLS MATA KULIAH + 4 COLS PROFIL & TIMELINE) -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              
+              <!-- LEFT (8 Cols): MATA KULIAH SEMESTER (Projects Table / Grid Toggle) -->
+              <div class="lg:col-span-8 card-pro p-5 sm:p-6">
+                
+                <!-- Card Header & Semester + Mode Toggle -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                  <div>
+                    <h3 class="text-base font-extrabold text-slate-800 tracking-tight">Daftar Mata Kuliah</h3>
+                    <p class="text-xs text-slate-500 mt-0.5 flex items-center gap-1.5">
+                      <i data-lucide="check" class="w-3.5 h-3.5 text-brandTeal"></i>
+                      <span id="mkSummarySubtitle">Memuat mata kuliah...</span>
+                    </p>
+                  </div>
+
+                  <div class="flex flex-wrap items-center gap-2">
+                    <!-- Dynamic Semester Selector -->
+                    <div id="semesterTabsDashboard" class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl"></div>
+
+                    <!-- Switch Mode: Tabel Pro vs Kartu Ceria -->
+                    <div class="inline-flex bg-slate-100 p-1 rounded-xl">
+                      <button onclick="setCourseViewMode('table')" id="btnModeTable" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition flex items-center gap-1 bg-white text-slate-800 shadow-sm">
+                        <i data-lucide="table-2" class="w-3.5 h-3.5"></i>
+                        <span>Tabel</span>
+                      </button>
+                      <button onclick="setCourseViewMode('grid')" id="btnModeGrid" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition flex items-center gap-1 text-slate-500 hover:text-slate-800">
+                        <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i>
+                        <span>Kartu</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Table Mode Container -->
+                <div id="dashboardCourseTableWrap" class="mt-4 overflow-x-auto">
+                  <table class="w-full text-left border-collapse fluid-table">
+                    <thead>
+                      <tr class="border-b border-slate-100 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                        <th class="py-3 pr-3">Mata Kuliah</th>
+                        <th class="py-3 px-2">Dosen &amp; SKS</th>
+                        <th class="py-3 px-2 text-center">Berkas</th>
+                        <th class="py-3 pl-2 w-32 sm:w-40">Progres Tugas</th>
+                      </tr>
+                    </thead>
+                    <tbody id="dashboardCourseTableBody" class="divide-y divide-slate-100 text-xs">
+                      <!-- Rendered Dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Grid Card Mode Container -->
+                <div id="dashboardCourseGridWrap" class="hidden mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <!-- Rendered Dynamically -->
+                </div>
+
+              </div>
+
+              <!-- RIGHT (4 Cols): PROFIL MAHASISWA UINSSC & TIMELINE AKTIVITAS -->
+              <div class="lg:col-span-4 space-y-6">
+                
+                <!-- Kartu Profil Ringkas UINSSC -->
+                <div class="card-pro p-5 relative overflow-hidden">
+                  <div class="absolute top-0 left-0 right-0 h-1.5 flex">
+                    <div class="flex-1 bg-brandTeal"></div>
+                    <div class="flex-1 bg-brandMint"></div>
+                    <div class="flex-1 bg-brandAmber"></div>
+                    <div class="flex-1 bg-brandCrimson"></div>
+                  </div>
+
+                  <div class="flex items-center justify-between mb-4 pt-1">
+                    <div class="flex items-center gap-2">
+                      <img src="assets/logo-uinssc.png" alt="UINSSC" class="w-6 h-6 object-contain" onerror="this.style.display='none';">
+                      <span class="text-[11px] font-bold uppercase tracking-wider text-brandTeal">Kartu Mahasiswa</span>
+                    </div>
+                    <button onclick="openProfileModal()" class="text-[11px] font-bold text-slate-500 hover:text-brandCrimson flex items-center gap-1 transition">
+                      <i data-lucide="pencil" class="w-3 h-3"></i>
+                      <span>Ubah</span>
+                    </button>
+                  </div>
+
+                  <div class="flex items-center gap-3.5">
+                    <img id="cardAvatar" src="assets/logo-uinssc.png" onerror="this.onerror=null; this.src='assets/logo-uinssc.png';" alt="Foto Mahasiswa" class="w-16 h-16 rounded-2xl object-cover ring-2 ring-brandMint bg-slate-100 shrink-0 shadow-sm">
+                    <div class="min-w-0">
+                      <h4 id="cardNama" class="text-sm font-extrabold text-slate-800 truncate">-</h4>
+                      <p id="cardNim" class="text-xs font-mono font-bold text-brandCrimson mt-0.5">-</p>
+                      <p id="cardProdi" class="text-[11px] text-slate-500 truncate mt-0.5">-</p>
+                      <p id="cardFakultas" class="text-[10px] text-slate-400 truncate">-</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Timeline Aktivitas Terbaru (Orders Overview style) -->
+                <div class="card-pro p-5 sm:p-6">
+                  <div class="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 class="text-sm font-extrabold text-slate-800">Aktivitas Terbaru</h3>
+                      <p class="text-[11px] text-slate-500 mt-0.5">Riwayat unggahan modul, tugas &amp; catatan</p>
+                    </div>
+                    <div class="w-8 h-8 rounded-xl bg-emerald-50 text-brandTeal flex items-center justify-center">
+                      <i data-lucide="history" class="w-4 h-4"></i>
+                    </div>
+                  </div>
+
+                  <div id="timelineAktivitas" class="space-y-4 relative before:absolute before:left-3 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-100">
+                    <!-- Rendered Dynamically -->
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- ================================================================== -->
+          <!-- VIEW 2: HALAMAN DAFTAR MATA KULIAH LENGKAP -->
+          <!-- ================================================================== -->
+          <div id="viewCourses" class="hidden space-y-6">
+            <div class="card-pro p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 class="text-lg font-extrabold text-slate-800">Katalog Mata Kuliah</h2>
+                <p class="text-xs text-slate-500 mt-0.5">Pilih mata kuliah untuk mengakses materi &amp; tugas Pertemuan 1 hingga 16</p>
+              </div>
+              <div id="semesterTabsCourses" class="flex flex-wrap items-center gap-1.5 bg-slate-100 p-1 rounded-xl"></div>
+            </div>
+
+            <div id="gridMataKuliahFull" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              <!-- Rendered Dynamically -->
+            </div>
+          </div>
+
+          <!-- ================================================================== -->
+          <!-- VIEW 3: DETAIL MATA KULIAH & 16 KOTAK PERTEMUAN -->
+          <!-- ================================================================== -->
+          <div id="viewDetailMK" class="hidden space-y-6">
+            
+            <!-- Back & Metadata Bar -->
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <button onclick="backFromDetailMK()" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700 shadow-sm transition">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                <span>Kembali</span>
+              </button>
+              
+              <div class="flex items-center gap-2">
+                <span id="detailBadgeSks" class="text-xs font-bold px-3 py-1 rounded-full bg-brandAmber/20 text-amber-900 border border-brandAmber/40">3 SKS</span>
+                <span class="text-xs font-bold px-3 py-1 rounded-full bg-white text-slate-600 border border-slate-200">16 Pertemuan</span>
+              </div>
+            </div>
+
+            <!-- Banner Mata Kuliah -->
+            <div id="bannerDetailMK" class="rounded-2xl p-6 sm:p-8 text-white shadow-lg relative overflow-hidden">
+              <div class="absolute right-0 top-0 bottom-0 w-48 bg-white/10 skew-x-[-20deg] translate-x-16 pointer-events-none"></div>
+              <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="space-y-1.5">
+                  <span id="detailKodeMK" class="inline-block text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-sm">MK-SEM1-01</span>
+                  <h2 id="detailNamaMK" class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">Nama Mata Kuliah</h2>
+                  <p id="detailDosenMK" class="text-xs sm:text-sm text-white/90 font-medium flex items-center gap-1.5">
+                    <i data-lucide="user-check" class="w-4 h-4"></i>
+                    <span>Dosen Pengampu</span>
+                  </p>
+                </div>
+                <div class="bg-white/15 backdrop-blur-sm rounded-2xl px-4 py-3 border border-white/20 text-left md:text-right shrink-0">
+                  <p class="text-[10px] uppercase font-bold tracking-wider text-white/80">Progres Penyelesaian</p>
+                  <p id="detailProgressText" class="text-xl font-extrabold text-white">0 / 16 Pertemuan</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Grid 16 Kotak Pertemuan -->
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm sm:text-base font-extrabold text-slate-800 flex items-center gap-2">
+                  <i data-lucide="grid-3x3" class="w-4 h-4 text-brandTeal"></i>
+                  <span>Pertemuan 1 sampai 16</span>
+                </h3>
+                <span class="text-[11px] font-semibold text-slate-500">Klik kotak untuk kelola modul, tugas &amp; catatan</span>
+              </div>
+
+              <div id="gridPertemuan" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Rendered Dynamically -->
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ================================================================== -->
+          <!-- VIEW 4: ARSIP SEMUA BERKAS (MODUL & TUGAS LINTAS MK) -->
+          <!-- ================================================================== -->
+          <div id="viewFiles" class="hidden space-y-6">
+            <div class="card-pro p-5 sm:p-6">
+              <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                <div>
+                  <h2 class="text-lg font-extrabold text-slate-800">Arsip Berkas Google Drive</h2>
+                  <p class="text-xs text-slate-500 mt-0.5">Seluruh modul materi &amp; tugas kuliah yang tersimpan di Google Drive Anda</p>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2">
+                  <select id="filterFileMK" onchange="renderFilesArchive()" class="px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-700 outline-none focus:border-brandTeal">
+                    <option value="">Semua Mata Kuliah</option>
+                  </select>
+                  <select id="filterFileCat" onchange="renderFilesArchive()" class="px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-700 outline-none focus:border-brandTeal">
+                    <option value="">Semua Kategori</option>
+                    <option value="MODUL">Modul Kuliah</option>
+                    <option value="TUGAS">Tugas Kuliah</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="mt-4 overflow-x-auto">
+                <table class="w-full text-left border-collapse fluid-table">
+                  <thead>
+                    <tr class="border-b border-slate-100 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                      <th class="py-3 pr-3">Nama Berkas</th>
+                      <th class="py-3 px-2">Kategori</th>
+                      <th class="py-3 px-2">Mata Kuliah &amp; Pertemuan</th>
+                      <th class="py-3 px-2">Ukuran &amp; Tanggal</th>
+                      <th class="py-3 pl-2 text-right">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="archiveFilesTableBody" class="divide-y divide-slate-100 text-xs">
+                    <!-- Rendered Dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- ================================================================== -->
+          <!-- VIEW 5: REKAP CATATAN DOSEN & RESUME MATERI -->
+          <!-- ================================================================== -->
+          <div id="viewNotes" class="hidden space-y-6">
+            <div class="card-pro p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 class="text-lg font-extrabold text-slate-800">Rekap Catatan &amp; Resume Kuliah</h2>
+                <p class="text-xs text-slate-500 mt-0.5">Kumpulan rangkuman materi dari seluruh pertemuan yang sudah Anda catat</p>
+              </div>
+              <select id="filterNotesMK" onchange="renderNotesArchive()" class="px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-700 outline-none focus:border-brandAmber">
+                <option value="">Semua Mata Kuliah</option>
+              </select>
+            </div>
+
+            <div id="archiveNotesGrid" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <!-- Rendered Dynamically -->
+            </div>
+          </div>
+
+        </div>
+      </main>
+
+    </div>
+  </div>
+
+  <!-- ============================================================================== -->
+  <!-- 3. MODAL DETAIL PERTEMUAN (MODUL, TUGAS, CATATAN) -->
+  <!-- ============================================================================== -->
+  <div id="modalPertemuan" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 overflow-y-auto">
+    <div class="w-full max-w-2xl bg-white rounded-3xl p-6 sm:p-8 shadow-2xl relative my-8 border border-slate-100">
+      
+      <!-- Modal Header -->
+      <div class="flex items-start justify-between pb-4 border-b border-slate-100">
+        <div>
+          <div class="flex flex-wrap items-center gap-2 mb-1">
+            <span id="modalPtmBadge" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-brandTeal text-white">Pertemuan 1</span>
+            <span id="modalPtmMkName" class="text-xs font-semibold text-slate-500">Mata Kuliah</span>
+          </div>
+          <h3 id="modalPtmTopik" class="text-base sm:text-lg font-extrabold text-slate-800 tracking-tight">Topik Perkuliahan</h3>
+        </div>
+        <button onclick="closePertemuanModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition shrink-0">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Tab Buttons -->
+      <div class="flex items-center gap-1.5 mt-5 p-1 bg-slate-100 rounded-2xl">
+        <button onclick="switchPtmTab('tabModul')" id="btnTabModul" class="flex-1 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-white text-slate-800 shadow-sm">
+          <i data-lucide="file-text" class="w-3.5 h-3.5 text-brandTeal"></i>
+          <span>Modul</span>
+        </button>
+        <button onclick="switchPtmTab('tabTugas')" id="btnTabTugas" class="flex-1 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 text-slate-600 hover:text-slate-800">
+          <i data-lucide="check-square" class="w-3.5 h-3.5 text-brandCrimson"></i>
+          <span>Tugas</span>
+        </button>
+        <button onclick="switchPtmTab('tabCatatan')" id="btnTabCatatan" class="flex-1 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 text-slate-600 hover:text-slate-800">
+          <i data-lucide="pencil-line" class="w-3.5 h-3.5 text-brandAmber"></i>
+          <span>Catatan</span>
+        </button>
+      </div>
+
+      <!-- TAB 1: MODUL KULIAH -->
+      <div id="contentTabModul" class="mt-5 space-y-4">
+        <div id="dropzoneModul" class="border-2 border-dashed border-slate-200 hover:border-brandTeal rounded-2xl p-5 text-center transition bg-slate-50/70">
+          <input type="file" id="fileInputModul" class="hidden" onchange="handleFileSelected(event, 'MODUL')">
+          <label for="fileInputModul" class="cursor-pointer flex flex-col items-center justify-center">
+            <div class="w-11 h-11 rounded-2xl bg-emerald-50 text-brandTeal flex items-center justify-center mb-2 shadow-sm">
+              <i data-lucide="upload-cloud" class="w-5 h-5" id="iconUploadModul"></i>
+            </div>
+            <p class="text-xs font-bold text-slate-800" id="textUploadModul">Unggah Modul ke Google Drive</p>
+            <p class="text-[11px] text-slate-500 mt-0.5">PDF, DOCX, PPTX, atau Gambar (Maks 15 MB)</p>
+          </label>
+        </div>
+
+        <div>
+          <h4 class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Daftar Modul Tersedia</h4>
+          <div id="listBerkasModul" class="space-y-2 max-h-56 overflow-y-auto pr-1"></div>
+        </div>
+      </div>
+
+      <!-- TAB 2: TUGAS KULIAH -->
+      <div id="contentTabTugas" class="mt-5 space-y-4 hidden">
+        <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <p class="text-xs font-bold text-slate-800">Status Tugas</p>
+            <p class="text-[11px] text-slate-500">Perbarui progres pengerjaan tugas</p>
+          </div>
+          <div class="inline-flex rounded-xl p-1 bg-slate-200/70">
+            <button onclick="changeCurrentTaskStatus('Belum Ada')" id="btnStatusBelumAda" class="px-3 py-1.5 rounded-lg text-[11px] font-bold transition">Belum Ada</button>
+            <button onclick="changeCurrentTaskStatus('Perlu Dikerjakan')" id="btnStatusPerlu" class="px-3 py-1.5 rounded-lg text-[11px] font-bold transition">Pending</button>
+            <button onclick="changeCurrentTaskStatus('Selesai')" id="btnStatusSelesai" class="px-3 py-1.5 rounded-lg text-[11px] font-bold transition">Selesai</button>
+          </div>
+        </div>
+
+        <div id="dropzoneTugas" class="border-2 border-dashed border-slate-200 hover:border-brandCrimson rounded-2xl p-5 text-center transition bg-slate-50/70">
+          <input type="file" id="fileInputTugas" class="hidden" onchange="handleFileSelected(event, 'TUGAS')">
+          <label for="fileInputTugas" class="cursor-pointer flex flex-col items-center justify-center">
+            <div class="w-11 h-11 rounded-2xl bg-rose-50 text-brandCrimson flex items-center justify-center mb-2 shadow-sm">
+              <i data-lucide="file-check" class="w-5 h-5" id="iconUploadTugas"></i>
+            </div>
+            <p class="text-xs font-bold text-slate-800" id="textUploadTugas">Unggah Berkas Tugas ke Google Drive</p>
+            <p class="text-[11px] text-slate-500 mt-0.5">PDF, DOCX, ZIP, atau Gambar (Maks 15 MB)</p>
+          </label>
+        </div>
+
+        <div>
+          <h4 class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Daftar Tugas Terunggah</h4>
+          <div id="listBerkasTugas" class="space-y-2 max-h-56 overflow-y-auto pr-1"></div>
+        </div>
+      </div>
+
+      <!-- TAB 3: CATATAN & RESUME KULIAH -->
+      <div id="contentTabCatatan" class="mt-5 space-y-4 hidden">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">Judul / Topik Pertemuan</label>
+          <input type="text" id="inputPtmJudul" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-brandAmber focus:ring-2 focus:ring-brandAmber/20 outline-none text-xs font-medium text-slate-800 transition">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">Rangkuman / Catatan Penting Dosen</label>
+          <textarea id="inputPtmCatatan" rows="6" placeholder="Ketik resume materi perkuliahan atau instruksi tugas dari dosen..." class="w-full p-3.5 rounded-xl border border-slate-200 focus:border-brandAmber focus:ring-2 focus:ring-brandAmber/20 outline-none text-xs font-medium text-slate-800 transition leading-relaxed"></textarea>
+        </div>
+        <div class="flex justify-end">
+          <button onclick="saveCurrentNotes()" id="btnSaveNotes" class="px-5 py-2.5 rounded-xl bg-brandAmber hover:bg-amber-500 active:scale-95 text-slate-900 font-bold text-xs shadow-md shadow-brandAmber/25 transition flex items-center gap-2">
+            <i data-lucide="save" class="w-4 h-4"></i>
+            <span>Simpan ke Spreadsheet</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================================== -->
+  <!-- 4. IN-APP DOCUMENT PREVIEWER MODAL (FIXED FOR GOOGLE DRIVE IMAGES & PDF) -->
+  <!-- ============================================================================== -->
+  <div id="modalViewer" class="fixed inset-0 z-50 hidden flex flex-col bg-slate-950/90 backdrop-blur-md p-2 sm:p-6 transition-all">
+    <div class="w-full max-w-6xl mx-auto h-full flex flex-col bg-slate-900 rounded-3xl overflow-hidden shadow-2xl border border-slate-800">
+      
+      <div class="flex items-center justify-between px-5 py-3.5 bg-slate-800/90 border-b border-slate-700 text-white">
+        <div class="flex items-center gap-3 overflow-hidden">
+          <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-brandMint flex items-center justify-center shrink-0">
+            <i data-lucide="eye" class="w-4 h-4"></i>
+          </div>
+          <div class="truncate">
+            <h4 id="viewerFileName" class="text-xs sm:text-sm font-bold text-white truncate">Dokumen</h4>
+            <p id="viewerFileCategory" class="text-[10px] text-slate-400 uppercase font-semibold">Berkas Kuliah</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <a id="viewerBtnDownload" href="#" target="_blank" download class="px-3.5 py-1.5 rounded-xl bg-brandTeal hover:bg-emerald-600 text-xs font-bold text-white flex items-center gap-1.5 transition">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+            <span class="hidden sm:inline">Unduh</span>
+          </a>
+          <a id="viewerBtnExternal" href="#" target="_blank" class="px-3 py-1.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-xs font-semibold text-slate-200 flex items-center gap-1.5 transition">
+            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+            <span class="hidden sm:inline">Buka Drive</span>
+          </a>
+          <button onclick="closeViewerModal()" class="w-8 h-8 rounded-xl bg-slate-700 hover:bg-brandCrimson text-slate-300 hover:text-white flex items-center justify-center transition">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="flex-1 w-full bg-slate-950 relative flex items-center justify-center overflow-hidden">
+        <div id="viewerLoading" class="absolute inset-0 flex flex-col items-center justify-center text-slate-400 gap-2">
+          <i data-lucide="loader-2" class="w-8 h-8 animate-spin text-brandMint"></i>
+          <span class="text-xs font-medium">Memuat Pratinjau Berkas...</span>
+        </div>
+        
+        <iframe id="viewerIframe" class="w-full h-full border-0 hidden"></iframe>
+        <img id="viewerImage" class="max-w-full max-h-full object-contain hidden p-2" alt="Pratinjau Gambar">
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================================== -->
+  <!-- 5. MODAL EDIT PROFIL MAHASISWA & GANTI PIN (SINKRON BACKEND) -->
+  <!-- ============================================================================== -->
+  <div id="modalProfile" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 overflow-y-auto">
+    <div class="w-full max-w-md bg-white rounded-3xl p-6 sm:p-8 shadow-2xl relative my-8 border border-slate-100">
+      
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-5">
+        <h3 class="text-base sm:text-lg font-extrabold text-slate-800 tracking-tight flex items-center gap-2">
+          <i data-lucide="user-cog" class="w-5 h-5 text-brandTeal"></i>
+          <span>Detail &amp; Profil Mahasiswa</span>
+        </h3>
+        <button onclick="closeProfileModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="space-y-4">
+        <div class="flex items-center gap-4">
+          <img id="editAvatarPreview" src="assets/logo-uinssc.png" onerror="this.onerror=null; this.src='assets/logo-uinssc.png';" alt="Avatar" class="w-16 h-16 rounded-2xl object-cover ring-2 ring-brandAmber bg-slate-100 shrink-0">
+          <div class="flex-1 min-w-0">
+            <label class="block text-xs font-bold text-slate-700 mb-1">URL Foto Profil (Mendukung Link Drive)</label>
+            <input type="text" id="inputEditFoto" placeholder="https://..." class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-mono focus:border-brandTeal outline-none" oninput="document.getElementById('editAvatarPreview').src = normalizeDriveImageUrl(this.value)">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Nama Lengkap</label>
+          <input type="text" id="inputEditNama" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium text-slate-800 focus:border-brandTeal outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Nomor Induk Mahasiswa (NIM)</label>
+          <input type="text" id="inputEditNim" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-mono text-slate-800 focus:border-brandTeal outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Program Studi / Jurusan</label>
+          <input type="text" id="inputEditProdi" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium text-slate-800 focus:border-brandTeal outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Fakultas / Kampus</label>
+          <input type="text" id="inputEditFakultas" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium text-slate-800 focus:border-brandTeal outline-none">
+        </div>
+
+        <div class="pt-4 border-t border-slate-100">
+          <h4 class="text-xs font-bold text-slate-800 mb-2 flex items-center gap-1.5">
+            <i data-lucide="key" class="w-3.5 h-3.5 text-brandCrimson"></i>
+            <span>Ubah PIN Login (Opsional)</span>
+          </h4>
+          <div class="grid grid-cols-2 gap-2">
+            <input type="password" maxlength="6" id="inputPinLama" placeholder="PIN Lama" class="px-3 py-2 rounded-xl border border-slate-200 text-xs font-mono outline-none focus:border-brandCrimson">
+            <input type="password" maxlength="6" id="inputPinBaru" placeholder="PIN Baru (6 digit)" class="px-3 py-2 rounded-xl border border-slate-200 text-xs font-mono outline-none focus:border-brandCrimson">
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-3">
+          <button onclick="closeProfileModal()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-600 transition">Batal</button>
+          <button onclick="saveProfileChanges()" id="btnSaveProfile" class="px-5 py-2 rounded-xl bg-brandTeal hover:bg-emerald-700 text-white font-bold text-xs shadow-md shadow-brandTeal/20 transition flex items-center gap-1.5">
+            <span>Simpan Perubahan</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================================== -->
+  <!-- 6. MODAL KONFIGURASI CLOUD APPS SCRIPT -->
+  <!-- ============================================================================== -->
+  <div id="modalApiConfig" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 overflow-y-auto">
+    <div class="w-full max-w-lg bg-white rounded-3xl p-6 sm:p-8 shadow-2xl relative my-8 border border-slate-100">
+      
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
+        <h3 class="text-base sm:text-lg font-extrabold text-slate-800 tracking-tight flex items-center gap-2">
+          <i data-lucide="cloud" class="w-5 h-5 text-brandTeal"></i>
+          <span>Koneksi Google Apps Script</span>
+        </h3>
+        <button onclick="closeApiConfigModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="space-y-4 text-xs text-slate-600">
+        <p class="leading-relaxed">
+          Endpoint Web App Apps Script sudah tertanam permanen sehingga aplikasi web ini otomatis tersambung ke <b>Google Sheets</b> dan <b>Google Drive</b> Anda dari perangkat mana saja.
+        </p>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">URL Web App Google Apps Script (/exec)</label>
+          <input type="url" id="inputApiUrl" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 font-mono text-[11px] focus:border-brandTeal outline-none transition">
+        </div>
+
+        <div class="flex flex-wrap justify-between items-center gap-2 pt-2">
+          <button onclick="resetDefaultApiUrl()" class="px-3 py-2 rounded-xl text-[11px] font-bold text-slate-500 hover:text-brandCrimson transition">Reset ke URL Default</button>
+          <div class="flex gap-2">
+            <button onclick="testApiConnection()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition">Uji Koneksi</button>
+            <button onclick="saveApiUrl()" class="px-5 py-2.5 rounded-xl bg-brandTeal hover:bg-emerald-700 text-white font-bold text-xs shadow-md shadow-brandTeal/20 transition">Simpan &amp; Sinkron</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- ============================================================================== -->
+  <!-- 7. JAVASCRIPT APPLICATION LOGIC (100% REAL SPREADSHEET & DRIVE DATA) -->
+  <!-- ============================================================================== -->
+  <script>
+    // --- 7.1 ENDPOINT APPS SCRIPT PERMANEN PENGGUNA ---
+    const DEFAULT_API_URL = 'https://script.google.com/macros/s/AKfycbyq_XU9eSEZtTPGt-P_7MuTEWnsVYLbeCSQqxG5J38gmBVYdIrQxm-2tgXZ6CyX8lwp/exec';
+
+    const PALETTE_LIST = ['#238B6E', '#EAA646', '#C42B5B', '#7FE0BF', '#232327'];
+
+    // --- 7.2 STATE & IN-MEMORY CACHE ---
+    const AppState = {
+      isLoggedIn: false,
+      isVerifyingPin: false,
+      isUploadingFile: false,
+      currentView: 'dashboard',
+      previousView: 'dashboard',
+      courseViewMode: localStorage.getItem('kuliahku_course_mode') || 'table',
+      activeSemester: 1,
+      searchQuery: '',
+      currentPinInput: '',
+      apiUrl: localStorage.getItem('kuliahku_api_url') || DEFAULT_API_URL,
+      syncStatus: 'idle', // idle | syncing | online | error
+      lastSyncAt: '',
+      selectedMK: null,
+      selectedPertemuan: null,
+      profile: {
+        nim: '-',
+        nama: 'Memuat...',
+        jurusan: '-',
+        fakultas: 'UIN Siber Syekh Nurjati Cirebon',
+        fotoUrl: ''
+      },
+      mataKuliah: [],
+      pertemuan: [],
+      berkas: []
+    };
+
+    // --- 7.3 UTILITIES (SANITASI & GOOGLE DRIVE URL CONVERTER) ---
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function getDriveFileId(urlOrId) {
+      if (!urlOrId) return '';
+      var str = String(urlOrId).trim();
+      if (/^[a-zA-Z0-9_-]{20,}$/.test(str)) return str;
+      var m1 = str.match(/\/d\/([a-zA-Z0-9_-]+)/);
+      if (m1 && m1[1]) return m1[1];
+      var m2 = str.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+      if (m2 && m2[1]) return m2[1];
+      return '';
+    }
+
+    function normalizeDriveImageUrl(url) {
+      if (!url) return 'assets/logo-uinssc.png';
+      var str = String(url).trim();
+      if (str.indexOf('drive.google.com') !== -1) {
+        var fid = getDriveFileId(str);
+        if (fid) return 'https://drive.google.com/thumbnail?id=' + fid + '&sz=w400';
+      }
+      return str;
+    }
+
+    // --- 7.4 BOOTSTRAP & KEYBOARD SUPPORT ---
+    window.addEventListener('DOMContentLoaded', function() {
+      lucide.createIcons();
+      loadCachedCloudSnapshot();
+      checkAuthSession();
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && AppState.isLoggedIn) {
+        if (!document.getElementById('modalViewer').classList.contains('hidden')) {
+          closeViewerModal();
+        } else if (!document.getElementById('modalApiConfig').classList.contains('hidden')) {
+          closeApiConfigModal();
+        } else if (!document.getElementById('modalProfile').classList.contains('hidden')) {
+          closeProfileModal();
+        } else if (!document.getElementById('modalPertemuan').classList.contains('hidden')) {
+          closePertemuanModal();
+        }
+        return;
+      }
+      if (AppState.isLoggedIn) return;
+      if (e.key >= '0' && e.key <= '9') {
+        pressPin(e.key);
+      } else if (e.key === 'Backspace') {
+        backspacePin();
+      } else if (e.key === 'Enter') {
+        submitPin();
+      }
+    });
+
+    function loadCachedCloudSnapshot() {
+      try {
+        var cached = localStorage.getItem('kuliahku_cloud_cache');
+        if (cached) {
+          var parsed = JSON.parse(cached);
+          if (parsed.profil) AppState.profile = parsed.profil;
+          if (Array.isArray(parsed.mataKuliah)) AppState.mataKuliah = parsed.mataKuliah;
+          if (Array.isArray(parsed.pertemuan)) AppState.pertemuan = parsed.pertemuan;
+          if (Array.isArray(parsed.berkas)) AppState.berkas = parsed.berkas;
+          if (parsed.lastSyncAt) AppState.lastSyncAt = parsed.lastSyncAt;
+        }
+      } catch (e) {}
+    }
+
+    function saveCachedCloudSnapshot() {
+      try {
+        localStorage.setItem('kuliahku_cloud_cache', JSON.stringify({
+          profil: AppState.profile,
+          mataKuliah: AppState.mataKuliah,
+          pertemuan: AppState.pertemuan,
+          berkas: AppState.berkas,
+          lastSyncAt: AppState.lastSyncAt
+        }));
+      } catch (e) {}
+    }
+
+    // --- 7.5 AUTHENTICATION (BACKEND PIN VERIFICATION) ---
+    function checkAuthSession() {
+      if (sessionStorage.getItem('kuliahku_auth') === 'true') {
+        unlockApp();
+      } else {
+        document.getElementById('loginScreen').classList.remove('hidden');
+        document.getElementById('appShell').classList.add('hidden');
+      }
+    }
+
+    function pressPin(digit) {
+      if (AppState.isVerifyingPin) return;
+      if (AppState.currentPinInput.length < 6) {
+        AppState.currentPinInput += digit;
+        updatePinDots();
+        if (AppState.currentPinInput.length === 6) {
+          setTimeout(submitPin, 120);
+        }
+      }
+    }
+
+    function backspacePin() {
+      if (AppState.isVerifyingPin) return;
+      AppState.currentPinInput = AppState.currentPinInput.slice(0, -1);
+      updatePinDots();
+    }
+
+    function clearPin() {
+      AppState.currentPinInput = '';
+      updatePinDots();
+    }
+
+    function updatePinDots() {
+      for (var i = 0; i < 6; i++) {
+        var dot = document.getElementById('dot' + i);
+        if (dot) {
+          if (i < AppState.currentPinInput.length) dot.classList.add('filled');
+          else dot.classList.remove('filled');
+        }
+      }
+    }
+
+    async function submitPin() {
+      if (AppState.isVerifyingPin) return;
+      if (AppState.currentPinInput.length < 4) {
+        showToast('Masukkan 6 digit PIN Anda.', 'error');
+        return;
+      }
+
+      var pinInput = AppState.currentPinInput;
+      AppState.isVerifyingPin = true;
+      document.getElementById('loginVerifying').classList.remove('hidden');
+
+      try {
+        var res = await callApi('verifyPin', { pin: pinInput });
+        if (res && res.status === 'SUCCESS' && res.isValid === true) {
+          sessionStorage.setItem('kuliahku_auth', 'true');
+          unlockApp();
+        } else if (res && res.status === 'SUCCESS' && res.isValid === false) {
+          showToast('PIN tidak sesuai! Silakan coba lagi.', 'error');
+          clearPin();
+        } else {
+          showToast('Gagal memverifikasi PIN ke server Apps Script.', 'error');
+          clearPin();
+        }
+      } catch (err) {
+        showToast('Koneksi ke server gagal. Periksa internet Anda.', 'error');
+        clearPin();
+      } finally {
+        AppState.isVerifyingPin = false;
+        document.getElementById('loginVerifying').classList.add('hidden');
+      }
+    }
+
+    function unlockApp() {
+      AppState.isLoggedIn = true;
+      document.getElementById('loginScreen').classList.add('hidden');
+      document.getElementById('appShell').classList.remove('hidden');
+
+      updateProfileDisplay();
+      switchView('dashboard');
+      refreshData(false);
+    }
+
+    function lockApp() {
+      AppState.isLoggedIn = false;
+      sessionStorage.removeItem('kuliahku_auth');
+      clearPin();
+      document.getElementById('appShell').classList.add('hidden');
+      document.getElementById('loginScreen').classList.remove('hidden');
+      toggleSidebar(false);
+    }
+
+    // --- 7.6 CLOUD SYNC (GET INIT DATA FROM SPREADSHEET) ---
+    function setSyncBadge(status, label) {
+      AppState.syncStatus = status;
+      var dot = document.getElementById('syncDot');
+      var txt = document.getElementById('syncStatusText');
+      if (!dot || !txt) return;
+
+      txt.innerText = label;
+      dot.className = 'w-2 h-2 rounded-full ';
+      if (status === 'online') dot.className += 'bg-emerald-500';
+      else if (status === 'syncing') dot.className += 'bg-amber-400 animate-ping';
+      else dot.className += 'bg-rose-500';
+    }
+
+    async function refreshData(manual) {
+      if (!AppState.apiUrl) return;
+      setSyncBadge('syncing', 'Menyinkronkan...');
+      var loader = document.getElementById('globalLoadingOverlay');
+      if (loader) loader.classList.remove('hidden');
+
+      try {
+        var res = await fetch(AppState.apiUrl + '?action=getInitData', { redirect: 'follow' });
+        var json = await res.json();
+
+        if (json && json.status === 'SUCCESS' && json.data) {
+          if (json.data.profil) AppState.profile = json.data.profil;
+          AppState.mataKuliah = Array.isArray(json.data.mataKuliah) ? json.data.mataKuliah : [];
+          AppState.pertemuan = Array.isArray(json.data.pertemuan) ? json.data.pertemuan : [];
+          AppState.berkas = Array.isArray(json.data.berkas) ? json.data.berkas : [];
+
+          var now = new Date();
+          AppState.lastSyncAt = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+          // Pilih semester aktif dari profil atau MK pertama jika tersedia
+          var availableSems = getAvailableSemesters();
+          if (availableSems.length > 0 && availableSems.indexOf(AppState.activeSemester) === -1) {
+            AppState.activeSemester = availableSems[0];
+          }
+
+          saveCachedCloudSnapshot();
+          updateProfileDisplay();
+          renderActiveView();
+          setSyncBadge('online', 'Cloud Aktif');
+          if (manual) showToast('Data berhasil disinkronkan dari Google Sheets & Drive!', 'success');
+        } else {
+          setSyncBadge('error', 'Respon API Error');
+          if (manual) showToast('Gagal memuat data dari Spreadsheet.', 'error');
+        }
+      } catch (err) {
+        setSyncBadge('error', 'Offline / Cache');
+        if (manual) showToast('Tidak dapat menghubungi Apps Script. Menampilkan cache terakhir.', 'error');
+      } finally {
+        if (loader) loader.classList.add('hidden');
+      }
+    }
+
+    async function callApi(action, payload) {
+      if (!AppState.apiUrl) return null;
+      var bodyPayload = Object.assign({}, payload || {}, { action: action });
+      var res = await fetch(AppState.apiUrl, {
+        method: 'POST',
+        redirect: 'follow',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(bodyPayload)
+      });
+      return await res.json();
+    }
+
+    // --- 7.7 NAVIGATION & VIEW SWITCHING ---
+    function toggleSidebar(open) {
+      var sidebar = document.getElementById('appSidebar');
+      var backdrop = document.getElementById('sidebarBackdrop');
+      if (open) {
+        sidebar.classList.remove('-translate-x-[120%]');
+        backdrop.classList.remove('hidden');
+      } else {
+        sidebar.classList.add('-translate-x-[120%]');
+        backdrop.classList.add('hidden');
+      }
+    }
+
+    function switchView(viewName) {
+      if (viewName !== 'detailMK') {
+        AppState.previousView = viewName;
+      }
+      AppState.currentView = viewName;
+      toggleSidebar(false);
+
+      var views = ['viewDashboard', 'viewCourses', 'viewDetailMK', 'viewFiles', 'viewNotes'];
+      for (var i = 0; i < views.length; i++) {
+        var el = document.getElementById(views[i]);
+        if (el) el.classList.add('hidden');
+      }
+
+      // Highlight active sidebar item (Material Crimson Active Pill)
+      var navMap = { dashboard: 'nav-dashboard', courses: 'nav-courses', files: 'nav-files', notes: 'nav-notes' };
+      Object.keys(navMap).forEach(function(key) {
+        var btn = document.getElementById(navMap[key]);
+        if (!btn) return;
+        var activeKey = (viewName === 'detailMK') ? 'courses' : viewName;
+        if (key === activeKey) {
+          btn.className = 'nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all bg-gradient-to-tr from-[#A91E4A] to-[#C42B5B] text-white shadow-md shadow-rose-950/40';
+        } else {
+          btn.className = 'nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all text-slate-300 hover:bg-white/10 hover:text-white';
+        }
+      });
+
+      renderActiveView();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function renderActiveView() {
+      var v = AppState.currentView;
+      if (v === 'dashboard') {
+        document.getElementById('viewDashboard').classList.remove('hidden');
+        setBreadcrumb('Halaman', 'Dashboard', 'Dashboard Akademik');
+        renderDashboard();
+      } else if (v === 'courses') {
+        document.getElementById('viewCourses').classList.remove('hidden');
+        setBreadcrumb('Halaman', 'Mata Kuliah', 'Daftar Mata Kuliah');
+        renderCoursesPage();
+      } else if (v === 'detailMK') {
+        document.getElementById('viewDetailMK').classList.remove('hidden');
+        var mkName = AppState.selectedMK ? AppState.selectedMK.namaMK : 'Detail MK';
+        setBreadcrumb('Mata Kuliah', mkName, mkName);
+        renderDetailMKContent();
+      } else if (v === 'files') {
+        document.getElementById('viewFiles').classList.remove('hidden');
+        setBreadcrumb('Halaman', 'Arsip Berkas', 'Arsip Berkas Google Drive');
+        populateFilterDropdowns();
+        renderFilesArchive();
+      } else if (v === 'notes') {
+        document.getElementById('viewNotes').classList.remove('hidden');
+        setBreadcrumb('Akademik', 'Catatan Dosen', 'Rekap Catatan Kuliah');
+        populateFilterDropdowns();
+        renderNotesArchive();
+      }
+      lucide.createIcons();
+    }
+
+    function setBreadcrumb(parent, current, title) {
+      document.getElementById('breadcrumbParent').innerText = parent;
+      document.getElementById('breadcrumbCurrent').innerText = current;
+      document.getElementById('pageMainTitle').innerText = title;
+    }
+
+    function handleGlobalSearch(val) {
+      AppState.searchQuery = String(val || '').trim().toLowerCase();
+      renderActiveView();
+    }
+
+    function getAvailableSemesters() {
+      var sems = [];
+      AppState.mataKuliah.forEach(function(m) {
+        var s = Number(m.semester) || 1;
+        if (sems.indexOf(s) === -1) sems.push(s);
+      });
+      sems.sort(function(a, b) { return a - b; });
+      return sems.length > 0 ? sems : [1];
+    }
+
+    function selectSemester(sem) {
+      AppState.activeSemester = sem;
+      renderActiveView();
+    }
+
+    function renderSemesterTabs(containerId) {
+      var container = document.getElementById(containerId);
+      if (!container) return;
+      var sems = getAvailableSemesters();
+      var html = '';
+      for (var i = 0; i < sems.length; i++) {
+        var s = sems[i];
+        var isActive = (s === AppState.activeSemester);
+        var cls = isActive
+          ? 'px-3 py-1 rounded-lg text-[11px] font-bold bg-brandTeal text-white shadow-sm transition'
+          : 'px-3 py-1 rounded-lg text-[11px] font-semibold text-slate-500 hover:text-slate-800 transition';
+        html += '<button onclick="selectSemester(' + s + ')" class="' + cls + '">Sem ' + s + '</button>';
+      }
+      container.innerHTML = html;
+    }
+
+    function setCourseViewMode(mode) {
+      AppState.courseViewMode = mode;
+      localStorage.setItem('kuliahku_course_mode', mode);
+      renderDashboardCoursesList();
+    }
+
+    // --- 7.8 RENDER DASHBOARD (4 STATS + 3 CHARTS + TABLE/GRID + TIMELINE) ---
+    function renderDashboard() {
+      var totalMK = AppState.mataKuliah.length;
+      var totalSKS = AppState.mataKuliah.reduce(function(acc, m) { return acc + (Number(m.sks) || 0); }, 0);
+      var totalPtm = AppState.pertemuan.length;
+      var tugasSelesai = AppState.pertemuan.filter(function(p) { return p.statusTugas === 'Selesai'; }).length;
+      var tugasPending = AppState.pertemuan.filter(function(p) { return p.statusTugas === 'Perlu Dikerjakan'; }).length;
+      var totalBerkas = AppState.berkas.length;
+      var totalModul = AppState.berkas.filter(function(b) { return b.kategori === 'MODUL'; }).length;
+      var totalTugasFile = AppState.berkas.filter(function(b) { return b.kategori === 'TUGAS'; }).length;
+      var totalCatatan = AppState.pertemuan.filter(function(p) { return p.catatanMateri && p.catatanMateri.trim().length > 0; }).length;
+      var pct = totalPtm > 0 ? Math.round((tugasSelesai / totalPtm) * 100) : 0;
+
+      document.getElementById('statTotalMK').innerText = totalMK + ' MK';
+      document.getElementById('statTotalSKS').innerText = totalSKS + ' SKS';
+      document.getElementById('statTugasSelesai').innerText = tugasSelesai + ' / ' + totalPtm;
+      document.getElementById('statTugasPending').innerText = tugasPending + ' pending';
+      document.getElementById('statTotalPertemuanLabel').innerText = 'dari ' + totalPtm + ' pertemuan';
+      document.getElementById('statTotalBerkas').innerText = totalBerkas + ' File';
+      document.getElementById('statTotalModul').innerText = totalModul + ' modul';
+      document.getElementById('statTotalTugasFile').innerText = '& ' + totalTugasFile + ' tugas';
+      document.getElementById('statProgressPct').innerText = pct + '%';
+      document.getElementById('statTotalCatatan').innerText = totalCatatan + ' catatan';
+      document.getElementById('mkSummarySubtitle').innerText = tugasSelesai + ' tugas selesai dari ' + totalPtm + ' pertemuan';
+
+      if (AppState.lastSyncAt) {
+        document.getElementById('lastSyncTimeText').innerText = 'Terakhir sinkron pukul ' + AppState.lastSyncAt;
+      }
+
+      renderDashboardCharts();
+      renderSemesterTabs('semesterTabsDashboard');
+      renderDashboardCoursesList();
+      renderTimelineAktivitas();
+    }
+
+    function renderDashboardCharts() {
+      // CHART 1: Bar Chart Berkas per MK (Crimson Card)
+      var barContainer = document.getElementById('chartBarsMK');
+      var semCourses = AppState.mataKuliah.filter(function(m) { return Number(m.semester) === AppState.activeSemester; });
+      if (semCourses.length === 0) semCourses = AppState.mataKuliah;
+
+      var counts = semCourses.map(function(mk) {
+        var mkPtmIds = AppState.pertemuan.filter(function(p) { return p.idMK === mk.idMK; }).map(function(p) { return p.idPertemuan; });
+        var fileCount = AppState.berkas.filter(function(b) { return mkPtmIds.indexOf(b.idPertemuan) !== -1; }).length;
+        return { label: 'MK' + (semCourses.indexOf(mk) + 1), name: mk.namaMK, val: fileCount };
+      });
+      var maxBar = Math.max.apply(null, counts.map(function(c) { return c.val; }).concat([1]));
+
+      var barHtml = '';
+      if (counts.length === 0) {
+        barHtml = '<p class="text-xs text-white/70 m-auto">Belum ada data MK</p>';
+      } else {
+        for (var i = 0; i < counts.length; i++) {
+          var c = counts[i];
+          var hPct = Math.max(12, Math.round((c.val / maxBar) * 100));
+          barHtml += '<div class="flex-1 flex flex-col items-center justify-end h-full group" title="' + escapeHtml(c.name) + ': ' + c.val + ' berkas">' +
+            '<span class="text-[9px] font-bold text-white/80 mb-1 opacity-80 group-hover:opacity-100">' + c.val + '</span>' +
+            '<div class="w-2.5 sm:w-3.5 bg-white/90 group-hover:bg-white rounded-full transition-all duration-300" style="height: ' + hPct + '%"></div>' +
+            '<span class="text-[9px] font-bold text-white/80 mt-1.5">' + c.label + '</span>' +
+          '</div>';
+        }
+      }
+      barContainer.innerHTML = barHtml;
+
+      // CHART 2: SVG Line Chart Aktivitas Pertemuan P1..P16 (Emerald Card)
+      var lineContainer = document.getElementById('chartLinePertemuan');
+      var weeklyScores = [];
+      for (var pNum = 1; pNum <= 16; pNum++) {
+        var ptms = AppState.pertemuan.filter(function(p) { return Number(p.nomorPertemuan) === pNum; });
+        var score = 0;
+        ptms.forEach(function(p) {
+          if (p.statusTugas === 'Selesai') score += 2;
+          if (p.catatanMateri && p.catatanMateri.trim().length > 0) score += 1;
+          var hasFile = AppState.berkas.some(function(b) { return b.idPertemuan === p.idPertemuan; });
+          if (hasFile) score += 2;
+        });
+        weeklyScores.push(score);
+      }
+      var maxScore = Math.max.apply(null, weeklyScores.concat([1]));
+      var svgW = 280;
+      var svgH = 100;
+      var padX = 12;
+      var padY = 14;
+      var stepX = (svgW - padX * 2) / 15;
+      var pts = [];
+      var circles = '';
+
+      for (var w = 0; w < 16; w++) {
+        var x = Math.round(padX + w * stepX);
+        var y = Math.round(svgH - padY - ((weeklyScores[w] / maxScore) * (svgH - padY * 2)));
+        pts.push(x + ',' + y);
+        circles += '<circle cx="' + x + '" cy="' + y + '" r="3" fill="#FFFFFF" />';
+      }
+
+      lineContainer.innerHTML =
+        '<svg viewBox="0 0 ' + svgW + ' ' + (svgH + 18) + '" class="w-full h-full overflow-visible">' +
+          '<line x1="10" y1="20" x2="270" y2="20" stroke="rgba(255,255,255,0.18)" stroke-dasharray="3 3" />' +
+          '<line x1="10" y1="55" x2="270" y2="55" stroke="rgba(255,255,255,0.18)" stroke-dasharray="3 3" />' +
+          '<line x1="10" y1="90" x2="270" y2="90" stroke="rgba(255,255,255,0.18)" stroke-dasharray="3 3" />' +
+          '<polyline fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="' + pts.join(' ') + '" />' +
+          circles +
+          '<text x="12" y="114" fill="rgba(255,255,255,0.8)" font-size="9" font-weight="bold">P1</text>' +
+          '<text x="132" y="114" fill="rgba(255,255,255,0.8)" font-size="9" font-weight="bold">P8</text>' +
+          '<text x="254" y="114" fill="rgba(255,255,255,0.8)" font-size="9" font-weight="bold">P16</text>' +
+        '</svg>';
+
+      // CHART 3: Dark Charcoal + Fresh Mint Status Breakdown
+      var mintContainer = document.getElementById('chartMintStatus');
+      var totalP = AppState.pertemuan.length || 1;
+      var cntSelesai = AppState.pertemuan.filter(function(p) { return p.statusTugas === 'Selesai'; }).length;
+      var cntPending = AppState.pertemuan.filter(function(p) { return p.statusTugas === 'Perlu Dikerjakan'; }).length;
+      var cntCatatan = AppState.pertemuan.filter(function(p) { return p.catatanMateri && p.catatanMateri.trim().length > 0; }).length;
+      var pctSelesai = Math.round((cntSelesai / totalP) * 100);
+      var pctPending = Math.round((cntPending / totalP) * 100);
+      var pctCatatan = Math.round((cntCatatan / totalP) * 100);
+
+      mintContainer.innerHTML =
+        '<div class="w-full space-y-3 px-1">' +
+          '<div>' +
+            '<div class="flex justify-between text-[11px] font-bold mb-1"><span class="text-brandMint">Tugas Selesai</span><span>' + cntSelesai + ' (' + pctSelesai + '%)</span></div>' +
+            '<div class="w-full h-2 rounded-full bg-white/10 overflow-hidden"><div class="h-full bg-brandMint rounded-full transition-all" style="width:' + pctSelesai + '%"></div></div>' +
+          '</div>' +
+          '<div>' +
+            '<div class="flex justify-between text-[11px] font-bold mb-1"><span class="text-brandAmber">Tugas Pending</span><span>' + cntPending + ' (' + pctPending + '%)</span></div>' +
+            '<div class="w-full h-2 rounded-full bg-white/10 overflow-hidden"><div class="h-full bg-brandAmber rounded-full transition-all" style="width:' + pctPending + '%"></div></div>' +
+          '</div>' +
+          '<div>' +
+            '<div class="flex justify-between text-[11px] font-bold mb-1"><span class="text-slate-200">Catatan Materi</span><span>' + cntCatatan + ' (' + pctCatatan + '%)</span></div>' +
+            '<div class="w-full h-2 rounded-full bg-white/10 overflow-hidden"><div class="h-full bg-white rounded-full transition-all" style="width:' + pctCatatan + '%"></div></div>' +
+          '</div>' +
+        '</div>';
+    }
+
+    function getFilteredCourses() {
+      var list = AppState.mataKuliah.filter(function(m) {
+        return Number(m.semester) === AppState.activeSemester;
+      });
+      if (AppState.searchQuery) {
+        list = list.filter(function(m) {
+          return (m.namaMK && m.namaMK.toLowerCase().indexOf(AppState.searchQuery) !== -1) ||
+                 (m.dosen && m.dosen.toLowerCase().indexOf(AppState.searchQuery) !== -1) ||
+                 (m.idMK && m.idMK.toLowerCase().indexOf(AppState.searchQuery) !== -1);
+        });
+      }
+      return list;
+    }
+
+    function getCourseMetrics(mk) {
+      var ptms = AppState.pertemuan.filter(function(p) { return p.idMK === mk.idMK; });
+      var ptmIds = ptms.map(function(p) { return p.idPertemuan; });
+      var files = AppState.berkas.filter(function(b) { return ptmIds.indexOf(b.idPertemuan) !== -1; });
+      var moduls = files.filter(function(b) { return b.kategori === 'MODUL'; }).length;
+      var tugasDone = ptms.filter(function(p) { return p.statusTugas === 'Selesai'; }).length;
+      var totalP = ptms.length || 16;
+      var pct = Math.round((tugasDone / totalP) * 100);
+      return { ptms: ptms, files: files, moduls: moduls, tugasDone: tugasDone, totalP: totalP, pct: pct };
+    }
+
+    function renderDashboardCoursesList() {
+      var isTable = (AppState.courseViewMode === 'table');
+      var tableWrap = document.getElementById('dashboardCourseTableWrap');
+      var gridWrap = document.getElementById('dashboardCourseGridWrap');
+      var btnTable = document.getElementById('btnModeTable');
+      var btnGrid = document.getElementById('btnModeGrid');
+
+      if (isTable) {
+        tableWrap.classList.remove('hidden');
+        gridWrap.classList.add('hidden');
+        btnTable.className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition flex items-center gap-1 bg-white text-slate-800 shadow-sm';
+        btnGrid.className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition flex items-center gap-1 text-slate-500 hover:text-slate-800';
+      } else {
+        tableWrap.classList.add('hidden');
+        gridWrap.classList.remove('hidden');
+        btnGrid.className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition flex items-center gap-1 bg-white text-slate-800 shadow-sm';
+        btnTable.className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition flex items-center gap-1 text-slate-500 hover:text-slate-800';
+      }
+
+      var list = getFilteredCourses();
+      var tbody = document.getElementById('dashboardCourseTableBody');
+      tbody.innerHTML = '';
+      gridWrap.innerHTML = '';
+
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="py-8 text-center text-slate-400">Belum ada mata kuliah untuk semester ini.</td></tr>';
+        gridWrap.innerHTML = '<div class="col-span-full py-8 text-center text-xs text-slate-400">Belum ada mata kuliah yang cocok.</div>';
+        return;
+      }
+
+      list.forEach(function(mk, idx) {
+        var met = getCourseMetrics(mk);
+        var color = mk.warnaTema || PALETTE_LIST[idx % PALETTE_LIST.length];
+
+        // TABLE ROW (Material Dashboard Projects style)
+        var tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-50/90 cursor-pointer transition group';
+        tr.onclick = function() { openDetailMK(mk.idMK); };
+        tr.innerHTML =
+          '<td class="py-3.5 pr-3">' +
+            '<div class="flex items-center gap-3">' +
+              '<div class="w-9 h-9 rounded-xl flex items-center justify-center text-white font-extrabold text-xs shrink-0 shadow-sm" style="background-color:' + escapeHtml(color) + '">' +
+                (idx + 1) +
+              '</div>' +
+              '<div>' +
+                '<p class="font-bold text-slate-800 group-hover:text-brandTeal transition leading-snug">' + escapeHtml(mk.namaMK) + '</p>' +
+                '<span class="text-[10px] font-mono text-slate-400">' + escapeHtml(mk.idMK) + '</span>' +
+              '</div>' +
+            '</div>' +
+          '</td>' +
+          '<td class="py-3.5 px-2">' +
+            '<p class="font-semibold text-slate-700 leading-snug">' + escapeHtml(mk.dosen) + '</p>' +
+            '<span class="inline-block text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-500 mt-0.5">' + escapeHtml(mk.sks) + ' SKS</span>' +
+          '</td>' +
+          '<td class="py-3.5 px-2 text-center">' +
+            '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 text-brandTeal font-bold text-[11px]">' +
+              met.files.length + ' File' +
+            '</span>' +
+          '</td>' +
+          '<td class="py-3.5 pl-2">' +
+            '<div class="flex items-center justify-between text-[11px] font-bold mb-1">' +
+              '<span class="text-slate-600">' + met.tugasDone + '/' + met.totalP + '</span>' +
+              '<span style="color:' + escapeHtml(color) + '">' + met.pct + '%</span>' +
+            '</div>' +
+            '<div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">' +
+              '<div class="h-full rounded-full transition-all" style="width:' + met.pct + '%; background-color:' + escapeHtml(color) + '"></div>' +
+            '</div>' +
+          '</td>';
+        tbody.appendChild(tr);
+
+        // GRID CARD
+        var card = buildCourseCardElement(mk, met, color);
+        gridWrap.appendChild(card);
+      });
+
+      lucide.createIcons();
+    }
+
+    function buildCourseCardElement(mk, met, color) {
+      var card = document.createElement('div');
+      card.className = 'card-pro card-pro-hover p-5 cursor-pointer flex flex-col justify-between relative overflow-hidden group';
+      card.onclick = function() { openDetailMK(mk.idMK); };
+      card.innerHTML =
+        '<div class="absolute top-0 left-0 right-0 h-1.5" style="background-color:' + escapeHtml(color) + '"></div>' +
+        '<div>' +
+          '<div class="flex items-center justify-between mb-2.5 pt-1">' +
+            '<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full" style="background-color:' + escapeHtml(color) + '1A; color:' + escapeHtml(color) + '">' + escapeHtml(mk.idMK) + '</span>' +
+            '<span class="text-[11px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">' + escapeHtml(mk.sks) + ' SKS</span>' +
+          '</div>' +
+          '<h4 class="text-sm sm:text-base font-extrabold text-slate-800 group-hover:text-brandTeal transition leading-snug mb-1.5">' + escapeHtml(mk.namaMK) + '</h4>' +
+          '<p class="text-xs text-slate-500 flex items-center gap-1.5 mb-4"><i data-lucide="user-check" class="w-3.5 h-3.5 text-slate-400"></i><span>' + escapeHtml(mk.dosen) + '</span></p>' +
+        '</div>' +
+        '<div class="pt-3 border-t border-slate-100 space-y-2.5">' +
+          '<div class="flex items-center justify-between text-xs font-semibold text-slate-600">' +
+            '<span class="flex items-center gap-1"><i data-lucide="file-text" class="w-3.5 h-3.5 text-brandTeal"></i> ' + met.moduls + ' Modul</span>' +
+            '<span class="flex items-center gap-1"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-brandCrimson"></i> ' + met.tugasDone + '/' + met.totalP + ' Tugas</span>' +
+          '</div>' +
+          '<div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">' +
+            '<div class="h-full rounded-full" style="width:' + met.pct + '%; background-color:' + escapeHtml(color) + '"></div>' +
+          '</div>' +
+          '<div class="w-full py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition" style="background-color:' + escapeHtml(color) + '15; color:' + escapeHtml(color) + '">' +
+            '<span>Buka 16 Pertemuan</span><i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>' +
+          '</div>' +
+        '</div>';
+      return card;
+    }
+
+    function renderTimelineAktivitas() {
+      var container = document.getElementById('timelineAktivitas');
+      var events = [];
+
+      AppState.berkas.forEach(function(b) {
+        var ptm = AppState.pertemuan.find(function(p) { return p.idPertemuan === b.idPertemuan; });
+        var mk = ptm ? AppState.mataKuliah.find(function(m) { return m.idMK === ptm.idMK; }) : null;
+        events.push({
+          type: b.kategori === 'TUGAS' ? 'tugas' : 'modul',
+          title: b.namaFile,
+          sub: (mk ? mk.namaMK : 'Kuliah') + (ptm ? ' • Pertemuan ' + ptm.nomorPertemuan : ''),
+          date: b.tanggalUpload || '',
+          idBerkas: b.idBerkas
+        });
+      });
+
+      AppState.pertemuan.forEach(function(p) {
+        if (p.catatanMateri && p.catatanMateri.trim().length > 0 && p.tanggalUpdate) {
+          var mk = AppState.mataKuliah.find(function(m) { return m.idMK === p.idMK; });
+          events.push({
+            type: 'catatan',
+            title: 'Catatan Pertemuan ' + p.nomorPertemuan,
+            sub: mk ? mk.namaMK : 'Kuliah',
+            date: p.tanggalUpdate,
+            idPertemuan: p.idPertemuan
+          });
+        }
+      });
+
+      events.sort(function(a, b) {
+        return String(b.date).localeCompare(String(a.date));
+      });
+
+      var topEvents = events.slice(0, 6);
+      if (topEvents.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-400 pl-7 py-2">Belum ada aktivitas unggahan atau catatan terbaru.</p>';
+        return;
+      }
+
+      var html = '';
+      topEvents.forEach(function(ev) {
+        var badgeBg = ev.type === 'modul' ? 'bg-brandTeal' : (ev.type === 'tugas' ? 'bg-brandCrimson' : 'bg-brandAmber');
+        var icon = ev.type === 'modul' ? 'file-text' : (ev.type === 'tugas' ? 'file-check' : 'pencil');
+        var actionAttr = ev.idBerkas
+          ? 'onclick="openViewer(\'' + escapeHtml(ev.idBerkas) + '\')"'
+          : 'onclick="openPertemuanModal(\'' + escapeHtml(ev.idPertemuan) + '\')"';
+
+        html +=
+          '<div ' + actionAttr + ' class="relative pl-8 cursor-pointer group">' +
+            '<span class="absolute left-0 top-0.5 w-6 h-6 rounded-full ' + badgeBg + ' text-white flex items-center justify-center shadow-sm ring-4 ring-white">' +
+              '<i data-lucide="' + icon + '" class="w-3 h-3"></i>' +
+            '</span>' +
+            '<p class="text-xs font-bold text-slate-800 group-hover:text-brandTeal transition truncate">' + escapeHtml(ev.title) + '</p>' +
+            '<p class="text-[11px] text-slate-500 truncate">' + escapeHtml(ev.sub) + '</p>' +
+            '<p class="text-[10px] font-mono text-slate-400 mt-0.5">' + escapeHtml(String(ev.date).slice(0, 16)) + '</p>' +
+          '</div>';
+      });
+
+      container.innerHTML = html;
+    }
+
+    // --- 7.9 COURSES FULL PAGE & DETAIL 16 PERTEMUAN ---
+    function renderCoursesPage() {
+      renderSemesterTabs('semesterTabsCourses');
+      var container = document.getElementById('gridMataKuliahFull');
+      container.innerHTML = '';
+
+      var list = getFilteredCourses();
+      if (list.length === 0) {
+        container.innerHTML = '<div class="col-span-full card-pro p-8 text-center text-xs text-slate-400">Tidak ada mata kuliah yang ditemukan.</div>';
+        return;
+      }
+
+      list.forEach(function(mk, idx) {
+        var met = getCourseMetrics(mk);
+        var color = mk.warnaTema || PALETTE_LIST[idx % PALETTE_LIST.length];
+        container.appendChild(buildCourseCardElement(mk, met, color));
+      });
+    }
+
+    function openDetailMK(idMK) {
+      var mk = AppState.mataKuliah.find(function(m) { return m.idMK === idMK; });
+      if (!mk) return;
+      AppState.selectedMK = mk;
+      switchView('detailMK');
+    }
+
+    function backFromDetailMK() {
+      AppState.selectedMK = null;
+      switchView(AppState.previousView || 'dashboard');
+    }
+
+    function renderDetailMKContent() {
+      var mk = AppState.selectedMK;
+      if (!mk) return;
+
+      var color = mk.warnaTema || '#238B6E';
+      document.getElementById('detailKodeMK').innerText = mk.idMK;
+      document.getElementById('detailNamaMK').innerText = mk.namaMK;
+      document.getElementById('detailDosenMK').innerHTML = '<i data-lucide="user-check" class="w-4 h-4"></i><span>Dosen: ' + escapeHtml(mk.dosen) + '</span>';
+      document.getElementById('detailBadgeSks').innerText = mk.sks + ' SKS';
+      document.getElementById('bannerDetailMK').style.backgroundColor = color;
+
+      var ptmList = AppState.pertemuan
+        .filter(function(p) { return p.idMK === mk.idMK; })
+        .slice()
+        .sort(function(a, b) { return Number(a.nomorPertemuan) - Number(b.nomorPertemuan); });
+
+      var doneCount = ptmList.filter(function(p) { return p.statusTugas === 'Selesai'; }).length;
+      document.getElementById('detailProgressText').innerText = doneCount + ' / ' + ptmList.length + ' Pertemuan';
+
+      var container = document.getElementById('gridPertemuan');
+      container.innerHTML = '';
+
+      if (ptmList.length === 0) {
+        container.innerHTML = '<div class="col-span-full card-pro p-8 text-center text-xs text-slate-400">Belum ada data pertemuan di Spreadsheet untuk mata kuliah ini.</div>';
+        return;
+      }
+
+      ptmList.forEach(function(ptm) {
+        var modulCount = AppState.berkas.filter(function(b) { return b.idPertemuan === ptm.idPertemuan && b.kategori === 'MODUL'; }).length;
+        var tugasCount = AppState.berkas.filter(function(b) { return b.idPertemuan === ptm.idPertemuan && b.kategori === 'TUGAS'; }).length;
+        var hasNotes = ptm.catatanMateri && ptm.catatanMateri.trim().length > 0;
+
+        var badgeHtml = '';
+        if (ptm.statusTugas === 'Selesai') {
+          badgeHtml = '<span class="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 text-[10px] font-bold flex items-center gap-1"><i data-lucide="check" class="w-3 h-3"></i> Selesai</span>';
+        } else if (ptm.statusTugas === 'Perlu Dikerjakan') {
+          badgeHtml = '<span class="px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 text-[10px] font-bold flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> Pending</span>';
+        } else {
+          badgeHtml = '<span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-500 text-[10px] font-medium">Belum Ada</span>';
+        }
+
+        var numStr = ptm.nomorPertemuan < 10 ? '0' + ptm.nomorPertemuan : String(ptm.nomorPertemuan);
+        var card = document.createElement('div');
+        card.className = 'card-pro card-pro-hover p-4 cursor-pointer flex flex-col justify-between group';
+        card.onclick = function() { openPertemuanModal(ptm.idPertemuan); };
+
+        card.innerHTML =
+          '<div>' +
+            '<div class="flex items-center justify-between mb-2">' +
+              '<span class="text-xs font-extrabold text-slate-800 group-hover:text-brandTeal transition">Pertemuan ' + numStr + '</span>' +
+              badgeHtml +
+            '</div>' +
+            '<p class="text-xs font-semibold text-slate-700 leading-relaxed mb-3 line-clamp-2">' + escapeHtml(ptm.judulTopik) + '</p>' +
+          '</div>' +
+          '<div class="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] font-medium text-slate-500">' +
+            '<span class="flex items-center gap-1 ' + (modulCount > 0 ? 'text-brandTeal font-bold' : '') + '">' +
+              '<i data-lucide="file-text" class="w-3.5 h-3.5"></i><span>' + modulCount + ' Modul</span>' +
+            '</span>' +
+            '<span class="flex items-center gap-1 ' + (tugasCount > 0 ? 'text-brandCrimson font-bold' : '') + '">' +
+              '<i data-lucide="file-check" class="w-3.5 h-3.5"></i><span>' + tugasCount + ' Tugas</span>' +
+            '</span>' +
+            '<span class="flex items-center gap-1 ' + (hasNotes ? 'text-brandAmber font-bold' : '') + '" title="Catatan Dosen">' +
+              '<i data-lucide="edit-3" class="w-3.5 h-3.5"></i>' +
+            '</span>' +
+          '</div>';
+
+        container.appendChild(card);
+      });
+    }
+
+    // --- 7.10 ARCHIVE FILES & NOTES VIEWS ---
+    function populateFilterDropdowns() {
+      var optHtml = '<option value="">Semua Mata Kuliah</option>';
+      AppState.mataKuliah.forEach(function(m) {
+        optHtml += '<option value="' + escapeHtml(m.idMK) + '">' + escapeHtml(m.namaMK) + '</option>';
+      });
+
+      var f1 = document.getElementById('filterFileMK');
+      var f2 = document.getElementById('filterNotesMK');
+      if (f1) {
+        var prev1 = f1.value;
+        f1.innerHTML = optHtml;
+        if (prev1) f1.value = prev1;
+      }
+      if (f2) {
+        var prev2 = f2.value;
+        f2.innerHTML = optHtml;
+        if (prev2) f2.value = prev2;
+      }
+    }
+
+    function renderFilesArchive() {
+      var tbody = document.getElementById('archiveFilesTableBody');
+      var mkFilter = document.getElementById('filterFileMK').value;
+      var catFilter = document.getElementById('filterFileCat').value;
+
+      var rows = AppState.berkas.filter(function(b) {
+        var ptm = AppState.pertemuan.find(function(p) { return p.idPertemuan === b.idPertemuan; });
+        var mk = ptm ? AppState.mataKuliah.find(function(m) { return m.idMK === ptm.idMK; }) : null;
+        if (mkFilter && (!mk || mk.idMK !== mkFilter)) return false;
+        if (catFilter && b.kategori !== catFilter) return false;
+        if (AppState.searchQuery) {
+          var hitName = b.namaFile && b.namaFile.toLowerCase().indexOf(AppState.searchQuery) !== -1;
+          var hitMK = mk && mk.namaMK.toLowerCase().indexOf(AppState.searchQuery) !== -1;
+          if (!hitName && !hitMK) return false;
+        }
+        return true;
+      });
+
+      if (rows.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="py-10 text-center text-slate-400">Belum ada berkas yang sesuai filter.</td></tr>';
+        return;
+      }
+
+      var html = '';
+      rows.forEach(function(file) {
+        var ptm = AppState.pertemuan.find(function(p) { return p.idPertemuan === file.idPertemuan; });
+        var mk = ptm ? AppState.mataKuliah.find(function(m) { return m.idMK === ptm.idMK; }) : null;
+        var catBadge = file.kategori === 'MODUL'
+          ? '<span class="px-2 py-0.5 rounded-md bg-emerald-50 text-brandTeal text-[10px] font-bold">MODUL</span>'
+          : '<span class="px-2 py-0.5 rounded-md bg-rose-50 text-brandCrimson text-[10px] font-bold">TUGAS</span>';
+
+        html +=
+          '<tr class="hover:bg-slate-50 transition">' +
+            '<td class="py-3 pr-3 font-bold text-slate-800">' + escapeHtml(file.namaFile) + '</td>' +
+            '<td class="py-3 px-2">' + catBadge + '</td>' +
+            '<td class="py-3 px-2"><p class="font-semibold text-slate-700">' + escapeHtml(mk ? mk.namaMK : '-') + '</p><p class="text-[10px] text-slate-400">Pertemuan ' + (ptm ? ptm.nomorPertemuan : '-') + '</p></td>' +
+            '<td class="py-3 px-2 text-slate-500"><p>' + escapeHtml(file.ukuranFile || '-') + '</p><p class="text-[10px]">' + escapeHtml(String(file.tanggalUpload || '').slice(0, 10)) + '</p></td>' +
+            '<td class="py-3 pl-2 text-right">' +
+              '<div class="inline-flex items-center gap-1.5">' +
+                '<button onclick="openViewer(\'' + escapeHtml(file.idBerkas) + '\')" class="px-2.5 py-1.5 rounded-lg bg-brandTeal/10 text-brandTeal hover:bg-brandTeal hover:text-white font-bold text-[11px] transition flex items-center gap-1"><i data-lucide="eye" class="w-3.5 h-3.5"></i><span>Buka</span></button>' +
+                '<a href="' + escapeHtml(file.downloadUrl || '#') + '" target="_blank" download class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition" title="Unduh"><i data-lucide="download" class="w-3.5 h-3.5"></i></a>' +
+                '<button onclick="deleteFile(\'' + escapeHtml(file.idBerkas) + '\')" class="w-7 h-7 rounded-lg bg-rose-50 hover:bg-rose-100 text-brandCrimson flex items-center justify-center transition" title="Hapus"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>' +
+              '</div>' +
+            '</td>' +
+          '</tr>';
+      });
+      tbody.innerHTML = html;
+      lucide.createIcons();
+    }
+
+    function renderNotesArchive() {
+      var grid = document.getElementById('archiveNotesGrid');
+      var mkFilter = document.getElementById('filterNotesMK').value;
+
+      var items = AppState.pertemuan.filter(function(p) {
+        if (!p.catatanMateri || p.catatanMateri.trim().length === 0) return false;
+        if (mkFilter && p.idMK !== mkFilter) return false;
+        if (AppState.searchQuery) {
+          var hitNote = p.catatanMateri.toLowerCase().indexOf(AppState.searchQuery) !== -1;
+          var hitTopik = p.judulTopik && p.judulTopik.toLowerCase().indexOf(AppState.searchQuery) !== -1;
+          if (!hitNote && !hitTopik) return false;
+        }
+        return true;
+      });
+
+      if (items.length === 0) {
+        grid.innerHTML = '<div class="col-span-full card-pro p-10 text-center text-xs text-slate-400">Belum ada catatan materi kuliah yang tersimpan.</div>';
+        return;
+      }
+
+      var html = '';
+      items.forEach(function(p) {
+        var mk = AppState.mataKuliah.find(function(m) { return m.idMK === p.idMK; });
+        html +=
+          '<div class="card-pro p-5 flex flex-col justify-between border-l-4 border-brandAmber">' +
+            '<div>' +
+              '<div class="flex items-center justify-between gap-2 mb-2">' +
+                '<span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800">' + escapeHtml(mk ? mk.namaMK : p.idMK) + '</span>' +
+                '<span class="text-[11px] font-extrabold text-slate-500">Pertemuan ' + p.nomorPertemuan + '</span>' +
+              '</div>' +
+              '<h4 class="text-sm font-extrabold text-slate-800 mb-2">' + escapeHtml(p.judulTopik) + '</h4>' +
+              '<p class="text-xs text-slate-600 whitespace-pre-line leading-relaxed">' + escapeHtml(p.catatanMateri) + '</p>' +
+            '</div>' +
+            '<div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">' +
+              '<span class="text-[10px] font-mono text-slate-400">' + escapeHtml(p.tanggalUpdate || '') + '</span>' +
+              '<button onclick="openPertemuanModal(\'' + escapeHtml(p.idPertemuan) + '\')" class="text-xs font-bold text-brandTeal hover:underline">Edit Catatan</button>' +
+            '</div>' +
+          '</div>';
+      });
+      grid.innerHTML = html;
+      lucide.createIcons();
+    }
+
+    // --- 7.11 MODAL DETAIL PERTEMUAN (UPLOAD, NOTES, STATUS) ---
+    function openPertemuanModal(idPertemuan) {
+      var ptm = AppState.pertemuan.find(function(p) { return p.idPertemuan === idPertemuan; });
+      if (!ptm) return;
+
+      AppState.selectedPertemuan = ptm;
+      var mk = AppState.selectedMK || AppState.mataKuliah.find(function(m) { return m.idMK === ptm.idMK; });
+
+      document.getElementById('modalPtmBadge').innerText = 'Pertemuan ' + ptm.nomorPertemuan;
+      document.getElementById('modalPtmMkName').innerText = mk ? mk.namaMK : 'Mata Kuliah';
+      document.getElementById('modalPtmTopik').innerText = ptm.judulTopik;
+      document.getElementById('inputPtmJudul').value = ptm.judulTopik;
+      document.getElementById('inputPtmCatatan').value = ptm.catatanMateri || '';
+
+      updateTaskStatusPills(ptm.statusTugas);
+      renderModalFiles(ptm.idPertemuan);
+      switchPtmTab('tabModul');
+
+      document.getElementById('modalPertemuan').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closePertemuanModal() {
+      if (AppState.isUploadingFile) {
+        showToast('Tunggu proses unggahan ke Google Drive selesai terlebih dahulu.', 'error');
+        return;
+      }
+      document.getElementById('modalPertemuan').classList.add('hidden');
+      AppState.selectedPertemuan = null;
+      renderActiveView();
+    }
+
+    function switchPtmTab(tabName) {
+      var tabs = ['tabModul', 'tabTugas', 'tabCatatan'];
+      tabs.forEach(function(tab) {
+        var cap = tab.charAt(0).toUpperCase() + tab.slice(1);
+        var btn = document.getElementById('btn' + cap);
+        var content = document.getElementById('content' + cap);
+        if (tab === tabName) {
+          btn.className = 'flex-1 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-white text-slate-800 shadow-sm';
+          content.classList.remove('hidden');
+        } else {
+          btn.className = 'flex-1 py-2 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-1.5 text-slate-500 hover:text-slate-800';
+          content.classList.add('hidden');
+        }
+      });
+      lucide.createIcons();
+    }
+
+    function updateTaskStatusPills(status) {
+      ['BelumAda', 'Perlu', 'Selesai'].forEach(function(s) {
+        document.getElementById('btnStatus' + s).className = 'px-3 py-1.5 rounded-lg text-[11px] font-bold transition text-slate-600';
+      });
+      if (status === 'Selesai') {
+        document.getElementById('btnStatusSelesai').className = 'px-3 py-1.5 rounded-lg text-[11px] font-bold transition bg-brandTeal text-white shadow-sm';
+      } else if (status === 'Perlu Dikerjakan') {
+        document.getElementById('btnStatusPerlu').className = 'px-3 py-1.5 rounded-lg text-[11px] font-bold transition bg-brandAmber text-slate-900 shadow-sm';
+      } else {
+        document.getElementById('btnStatusBelumAda').className = 'px-3 py-1.5 rounded-lg text-[11px] font-bold transition bg-slate-500 text-white shadow-sm';
+      }
+    }
+
+    async function changeCurrentTaskStatus(newStatus) {
+      if (!AppState.selectedPertemuan) return;
+      var ptmId = AppState.selectedPertemuan.idPertemuan;
+      AppState.selectedPertemuan.statusTugas = newStatus;
+      updateTaskStatusPills(newStatus);
+
+      var idx = AppState.pertemuan.findIndex(function(p) { return p.idPertemuan === ptmId; });
+      if (idx !== -1) AppState.pertemuan[idx].statusTugas = newStatus;
+      saveCachedCloudSnapshot();
+
+      try {
+        var res = await callApi('updateTaskStatus', { idPertemuan: ptmId, statusTugas: newStatus });
+        if (res && res.status === 'SUCCESS') {
+          showToast('Status tugas tersimpan: ' + newStatus, 'success');
+        } else {
+          showToast('Gagal menyimpan status ke Spreadsheet.', 'error');
+        }
+      } catch (e) {
+        showToast('Koneksi gagal saat mengubah status tugas.', 'error');
+      }
+    }
+
+    async function saveCurrentNotes() {
+      if (!AppState.selectedPertemuan) return;
+      var ptmId = AppState.selectedPertemuan.idPertemuan;
+      var judul = document.getElementById('inputPtmJudul').value.trim();
+      var catatan = document.getElementById('inputPtmCatatan').value.trim();
+      var btn = document.getElementById('btnSaveNotes');
+
+      btn.disabled = true;
+      btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Menyimpan...</span>';
+      lucide.createIcons();
+
+      try {
+        var res = await callApi('saveMeetingNotes', {
+          idPertemuan: ptmId,
+          judulTopik: judul,
+          catatanMateri: catatan
+        });
+
+        if (res && res.status === 'SUCCESS') {
+          AppState.selectedPertemuan.judulTopik = judul;
+          AppState.selectedPertemuan.catatanMateri = catatan;
+          var idx = AppState.pertemuan.findIndex(function(p) { return p.idPertemuan === ptmId; });
+          if (idx !== -1) {
+            AppState.pertemuan[idx].judulTopik = judul;
+            AppState.pertemuan[idx].catatanMateri = catatan;
+          }
+          document.getElementById('modalPtmTopik').innerText = judul;
+          saveCachedCloudSnapshot();
+          showToast('Catatan berhasil disimpan ke Spreadsheet!', 'success');
+        } else {
+          showToast('Gagal menyimpan catatan ke Spreadsheet.', 'error');
+        }
+      } catch (e) {
+        showToast('Koneksi gagal saat menyimpan catatan.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i data-lucide="save" class="w-4 h-4"></i><span>Simpan ke Spreadsheet</span>';
+        lucide.createIcons();
+      }
+    }
+
+    function renderModalFiles(idPertemuan) {
+      var containerModul = document.getElementById('listBerkasModul');
+      var containerTugas = document.getElementById('listBerkasTugas');
+      containerModul.innerHTML = '';
+      containerTugas.innerHTML = '';
+
+      var ptmFiles = AppState.berkas.filter(function(b) { return b.idPertemuan === idPertemuan; });
+      var moduls = ptmFiles.filter(function(b) { return b.kategori === 'MODUL'; });
+      var tasks = ptmFiles.filter(function(b) { return b.kategori === 'TUGAS'; });
+
+      if (moduls.length === 0) {
+        containerModul.innerHTML = '<p class="text-xs text-slate-400 italic py-3 text-center">Belum ada modul yang diunggah.</p>';
+      } else {
+        moduls.forEach(function(f) { containerModul.appendChild(createFileRow(f)); });
+      }
+
+      if (tasks.length === 0) {
+        containerTugas.innerHTML = '<p class="text-xs text-slate-400 italic py-3 text-center">Belum ada tugas yang diunggah.</p>';
+      } else {
+        tasks.forEach(function(f) { containerTugas.appendChild(createFileRow(f)); });
+      }
+      lucide.createIcons();
+    }
+
+    function createFileRow(file) {
+      var row = document.createElement('div');
+      row.className = 'flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200/80 hover:bg-slate-100/80 transition';
+      row.innerHTML =
+        '<div class="flex items-center gap-3 overflow-hidden">' +
+          '<div class="w-8 h-8 rounded-lg bg-emerald-50 text-brandTeal flex items-center justify-center shrink-0">' +
+            '<i data-lucide="file-text" class="w-4 h-4"></i>' +
+          '</div>' +
+          '<div class="truncate">' +
+            '<p class="text-xs font-bold text-slate-800 truncate max-w-[180px] sm:max-w-xs">' + escapeHtml(file.namaFile) + '</p>' +
+            '<p class="text-[10px] text-slate-400">' + escapeHtml(file.ukuranFile || '-') + ' • ' + escapeHtml(String(file.tanggalUpload || '').slice(0, 10)) + '</p>' +
+          '</div>' +
+        '</div>' +
+        '<div class="flex items-center gap-1.5 shrink-0">' +
+          '<button onclick="openViewer(\'' + escapeHtml(file.idBerkas) + '\')" class="px-2.5 py-1.5 rounded-lg bg-brandTeal/10 text-brandTeal hover:bg-brandTeal hover:text-white text-xs font-bold transition flex items-center gap-1"><i data-lucide="eye" class="w-3.5 h-3.5"></i><span class="hidden sm:inline">Preview</span></button>' +
+          '<a href="' + escapeHtml(file.downloadUrl || '#') + '" download target="_blank" class="w-7 h-7 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 flex items-center justify-center transition" title="Unduh"><i data-lucide="download" class="w-3.5 h-3.5"></i></a>' +
+          '<button onclick="deleteFile(\'' + escapeHtml(file.idBerkas) + '\')" class="w-7 h-7 rounded-lg bg-rose-50 hover:bg-rose-100 text-brandCrimson flex items-center justify-center transition" title="Hapus"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>' +
+        '</div>';
+      return row;
+    }
+
+    // --- 7.12 STRICT UPLOAD KE GOOGLE DRIVE (NO SILENT FAKE FALLBACK) ---
+    function handleFileSelected(event, kategori) {
+      var file = event.target.files[0];
+      if (!file || !AppState.selectedPertemuan) return;
+
+      if (AppState.isUploadingFile) {
+        showToast('Masih ada berkas yang sedang diunggah. Mohon tunggu sebentar.', 'error');
+        event.target.value = '';
+        return;
+      }
+
+      // Validasi ukuran maksimal 15 MB agar stabil via Base64 Apps Script
+      if (file.size > 15 * 1024 * 1024) {
+        showToast('Ukuran berkas melebihi batas 15 MB. Kompres berkas terlebih dahulu.', 'error');
+        event.target.value = '';
+        return;
+      }
+
+      var ptm = AppState.selectedPertemuan;
+      var mk = AppState.selectedMK || AppState.mataKuliah.find(function(m) { return m.idMK === ptm.idMK; });
+
+      var textEl = document.getElementById(kategori === 'MODUL' ? 'textUploadModul' : 'textUploadTugas');
+      var origText = textEl.innerText;
+      AppState.isUploadingFile = true;
+      textEl.innerText = 'Mengunggah "' + file.name + '" ke Google Drive...';
+
+      var reader = new FileReader();
+      reader.onerror = function() {
+        AppState.isUploadingFile = false;
+        textEl.innerText = origText;
+        showToast('Gagal membaca berkas dari perangkat Anda.', 'error');
+      };
+      reader.onload = async function(e) {
+        var base64Data = e.target.result.split(',')[1];
+        var sizeStr = file.size < 1024 * 1024
+          ? Math.max(1, Math.round(file.size / 1024)) + ' KB'
+          : (file.size / (1024 * 1024)).toFixed(1) + ' MB';
+
+        try {
+          var res = await callApi('uploadFile', {
+            fileName: file.name,
+            mimeType: file.type || 'application/pdf',
+            base64Data: base64Data,
+            idPertemuan: ptm.idPertemuan,
+            kategori: kategori,
+            namaMK: mk ? mk.namaMK : 'Mata Kuliah',
+            nomorPertemuan: ptm.nomorPertemuan,
+            ukuranFile: sizeStr
+          });
+
+          if (res && res.status === 'SUCCESS' && res.data) {
+            AppState.berkas.push(res.data);
+            if (kategori === 'TUGAS') {
+              ptm.statusTugas = 'Selesai';
+              updateTaskStatusPills('Selesai');
+            }
+            saveCachedCloudSnapshot();
+            renderModalFiles(ptm.idPertemuan);
+            showToast('Berkas berhasil disimpan ke Google Drive & Spreadsheet!', 'success');
+          } else {
+            showToast('Upload gagal: ' + (res && res.message ? res.message : 'Respon server tidak valid.'), 'error');
+          }
+        } catch (err) {
+          showToast('Gagal mengunggah berkas ke Google Drive. Periksa koneksi internet Anda.', 'error');
+        } finally {
+          AppState.isUploadingFile = false;
+          textEl.innerText = origText;
+        }
+      };
+      reader.readAsDataURL(file);
+      event.target.value = '';
+    }
+
+    async function deleteFile(idBerkas) {
+      if (!confirm('Hapus berkas ini dari Google Drive dan Spreadsheet?')) return;
+
+      try {
+        var res = await callApi('deleteFile', { idBerkas: idBerkas });
+        if (res && res.status === 'SUCCESS') {
+          AppState.berkas = AppState.berkas.filter(function(b) { return b.idBerkas !== idBerkas; });
+          saveCachedCloudSnapshot();
+          if (AppState.selectedPertemuan) renderModalFiles(AppState.selectedPertemuan.idPertemuan);
+          renderActiveView();
+          showToast('Berkas berhasil dihapus dari Drive & Spreadsheet.', 'success');
+        } else {
+          showToast('Gagal menghapus berkas di server.', 'error');
+        }
+      } catch (e) {
+        showToast('Koneksi gagal saat menghapus berkas.', 'error');
+      }
+    }
+
+    // --- 7.13 IN-APP DOCUMENT PREVIEWER (FIXED GOOGLE DRIVE IMAGES) ---
+    function openViewer(idBerkas) {
+      var file = AppState.berkas.find(function(b) { return b.idBerkas === idBerkas; });
+      if (!file) return;
+
+      document.getElementById('viewerFileName').innerText = file.namaFile;
+      document.getElementById('viewerFileCategory').innerText = file.kategori === 'MODUL' ? 'Modul Perkuliahan' : 'Tugas Kuliah';
+      document.getElementById('viewerBtnDownload').href = file.downloadUrl || '#';
+      document.getElementById('viewerBtnExternal').href = file.viewUrl || '#';
+
+      var iframe = document.getElementById('viewerIframe');
+      var img = document.getElementById('viewerImage');
+      var loading = document.getElementById('viewerLoading');
+
+      iframe.onload = null;
+      img.onload = null;
+      img.onerror = null;
+      iframe.classList.add('hidden');
+      img.classList.add('hidden');
+      loading.classList.remove('hidden');
+
+      var isImage = /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(file.namaFile) || (file.viewUrl && file.viewUrl.indexOf('data:image/') === 0);
+      var driveId = file.driveFileId || getDriveFileId(file.viewUrl);
+
+      if (isImage) {
+        img.onload = function() {
+          loading.classList.add('hidden');
+          img.classList.remove('hidden');
+        };
+        img.onerror = function() {
+          // Fallback ke Drive iframe preview jika direct thumbnail diblokir izin
+          img.classList.add('hidden');
+          if (driveId) {
+            iframe.onload = function() {
+              loading.classList.add('hidden');
+              iframe.classList.remove('hidden');
+            };
+            iframe.src = 'https://drive.google.com/file/d/' + driveId + '/preview';
+          } else {
+            loading.classList.add('hidden');
+            showToast('Pratinjau gambar gagal dimuat. Gunakan tombol Unduh atau Buka Drive.', 'error');
+          }
+        };
+
+        if (driveId && (file.viewUrl || '').indexOf('data:image/') !== 0) {
+          img.src = 'https://drive.google.com/thumbnail?id=' + driveId + '&sz=w1600';
+        } else if (file.viewUrl) {
+          img.src = file.viewUrl;
+        } else {
+          loading.classList.add('hidden');
+          showToast('Tautan pratinjau berkas belum tersedia.', 'error');
+        }
+      } else {
+        var embedUrl = file.viewUrl || '';
+        if (driveId && embedUrl.indexOf('/preview') === -1) {
+          embedUrl = 'https://drive.google.com/file/d/' + driveId + '/preview';
+        }
+        if (embedUrl) {
+          iframe.onload = function() {
+            loading.classList.add('hidden');
+            iframe.classList.remove('hidden');
+          };
+          iframe.src = embedUrl;
+        } else {
+          loading.classList.add('hidden');
+          showToast('Tautan pratinjau dokumen belum tersedia.', 'error');
+        }
+      }
+
+      document.getElementById('modalViewer').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeViewerModal() {
+      var iframe = document.getElementById('viewerIframe');
+      var img = document.getElementById('viewerImage');
+      iframe.onload = null;
+      img.onload = null;
+      img.onerror = null;
+      document.getElementById('modalViewer').classList.add('hidden');
+      iframe.src = '';
+      img.src = '';
+    }
+
+    // --- 7.14 PROFILE MANAGEMENT & BACKEND PIN UPDATE ---
+    function updateProfileDisplay() {
+      var p = AppState.profile;
+      var avatarSrc = normalizeDriveImageUrl(p.fotoUrl);
+
+      document.getElementById('navAvatar').src = avatarSrc;
+      document.getElementById('navNamaShort').innerText = p.nama || 'Profil';
+
+      document.getElementById('cardAvatar').src = avatarSrc;
+      document.getElementById('cardNama').innerText = p.nama || '-';
+      document.getElementById('cardNim').innerText = p.nim || '-';
+      document.getElementById('cardProdi').innerText = p.jurusan || '-';
+      document.getElementById('cardFakultas').innerText = p.fakultas || '-';
+    }
+
+    function openProfileModal() {
+      var p = AppState.profile;
+      document.getElementById('inputEditNama').value = p.nama || '';
+      document.getElementById('inputEditNim').value = p.nim || '';
+      document.getElementById('inputEditProdi').value = p.jurusan || '';
+      document.getElementById('inputEditFakultas').value = p.fakultas || '';
+      document.getElementById('inputEditFoto').value = p.fotoUrl || '';
+      document.getElementById('editAvatarPreview').src = normalizeDriveImageUrl(p.fotoUrl);
+      document.getElementById('inputPinLama').value = '';
+      document.getElementById('inputPinBaru').value = '';
+      document.getElementById('modalProfile').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeProfileModal() {
+      document.getElementById('modalProfile').classList.add('hidden');
+    }
+
+    async function saveProfileChanges() {
+      var nama = document.getElementById('inputEditNama').value.trim();
+      var nim = document.getElementById('inputEditNim').value.trim();
+      var jurusan = document.getElementById('inputEditProdi').value.trim();
+      var fakultas = document.getElementById('inputEditFakultas').value.trim();
+      var fotoUrl = document.getElementById('inputEditFoto').value.trim();
+      var pinLama = document.getElementById('inputPinLama').value.trim();
+      var pinBaru = document.getElementById('inputPinBaru').value.trim();
+
+      if (pinBaru.length > 0 && pinBaru.length !== 6) {
+        showToast('PIN baru wajib terdiri dari 6 digit!', 'error');
+        return;
+      }
+
+      var btn = document.getElementById('btnSaveProfile');
+      btn.disabled = true;
+      btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Menyimpan...</span>';
+      lucide.createIcons();
+
+      try {
+        var newProfile = {
+          nama: nama || AppState.profile.nama,
+          nim: nim || AppState.profile.nim,
+          jurusan: jurusan || AppState.profile.jurusan,
+          fakultas: fakultas || AppState.profile.fakultas,
+          fotoUrl: fotoUrl || AppState.profile.fotoUrl
+        };
+
+        var resProf = await callApi('updateProfile', { profile: newProfile });
+        if (!resProf || resProf.status !== 'SUCCESS') {
+          showToast('Gagal menyimpan profil ke Spreadsheet.', 'error');
+          return;
+        }
+
+        AppState.profile = Object.assign({}, AppState.profile, newProfile);
+        saveCachedCloudSnapshot();
+        updateProfileDisplay();
+
+        if (pinBaru.length === 6) {
+          var resPin = await callApi('updatePin', { oldPin: pinLama, newPin: pinBaru });
+          if (!resPin || resPin.status !== 'SUCCESS') {
+            showToast('Profil tersimpan, namun ganti PIN gagal: ' + (resPin && resPin.message ? resPin.message : 'PIN lama salah.'), 'error');
+            return;
+          }
+          showToast('Profil & PIN keamanan berhasil diperbarui!', 'success');
+        } else {
+          showToast('Profil berhasil diperbarui di Spreadsheet!', 'success');
+        }
+
+        closeProfileModal();
+      } catch (e) {
+        showToast('Gagal terhubung ke server saat menyimpan profil.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>Simpan Perubahan</span>';
+      }
+    }
+
+    // --- 7.15 API CONFIGURATION MODAL ---
+    function openApiConfigModal() {
+      document.getElementById('inputApiUrl').value = AppState.apiUrl;
+      document.getElementById('modalApiConfig').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeApiConfigModal() {
+      document.getElementById('modalApiConfig').classList.add('hidden');
+    }
+
+    function resetDefaultApiUrl() {
+      document.getElementById('inputApiUrl').value = DEFAULT_API_URL;
+      showToast('URL dikembalikan ke endpoint default.', 'info');
+    }
+
+    function saveApiUrl() {
+      var url = document.getElementById('inputApiUrl').value.trim() || DEFAULT_API_URL;
+      AppState.apiUrl = url;
+      localStorage.setItem('kuliahku_api_url', url);
+      closeApiConfigModal();
+      refreshData(true);
+    }
+
+    async function testApiConnection() {
+      var url = document.getElementById('inputApiUrl').value.trim();
+      if (!url) {
+        showToast('URL Web App tidak boleh kosong!', 'error');
+        return;
+      }
+      showToast('Menguji koneksi ke Google Apps Script...', 'info');
+      try {
+        var res = await fetch(url + '?action=ping', { redirect: 'follow' });
+        var data = await res.json();
+        if (data && data.status === 'SUCCESS') {
+          showToast('Koneksi Berhasil: ' + data.message, 'success');
+        } else {
+          showToast('Respon diterima namun status tidak valid.', 'error');
+        }
+      } catch (e) {
+        showToast('Gagal terhubung. Pastikan Apps Script di-deploy untuk akses "Anyone".', 'error');
+      }
+    }
+
+    // --- 7.16 TOAST NOTIFICATION ---
+    function showToast(message, type) {
+      var container = document.getElementById('toastContainer');
+      var toast = document.createElement('div');
+      var bg = 'bg-darkCharcoal text-white';
+      var icon = 'info';
+
+      if (type === 'success') {
+        bg = 'bg-brandTeal text-white';
+        icon = 'check-circle';
+      } else if (type === 'error') {
+        bg = 'bg-brandCrimson text-white';
+        icon = 'alert-triangle';
+      }
+
+      toast.className = 'pointer-events-auto flex items-center gap-2.5 px-4 py-3 rounded-2xl ' + bg + ' shadow-xl text-xs font-bold transition-all duration-300 transform translate-y-4 opacity-0';
+      toast.innerHTML = '<i data-lucide="' + icon + '" class="w-4 h-4 shrink-0"></i><span>' + escapeHtml(message) + '</span>';
+
+      container.appendChild(toast);
+      lucide.createIcons();
+
+      requestAnimationFrame(function() {
+        toast.classList.remove('translate-y-4', 'opacity-0');
+      });
+
+      setTimeout(function() {
+        toast.classList.add('translate-y-4', 'opacity-0');
+        setTimeout(function() { toast.remove(); }, 300);
+      }, 3500);
+    }
+  </script>
+</body>
+</html>
