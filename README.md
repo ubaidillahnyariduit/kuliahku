@@ -48,7 +48,8 @@ Karena URL API Google Apps Script Anda sudah tertanam permanen di dalam `index.h
 
 ---
 
-## 🔧 Catatan Backend Google Apps Script
-* Aplikasi ini terhubung permanen ke endpoint `/exec` Anda secara default (juga dapat disesuaikan lewat menu **Integrasi Cloud**).
-* Data pada Google Spreadsheet dan folder di Google Drive Anda **tidak perlu diubah atau direset**.
-* *(Opsional Keamanan)*: Jika Anda ingin mengetatkan pengecekan PIN di backend agar PIN lama `123456` tidak dapat dipakai lagi setelah Anda mengganti PIN melalui web, salin pembaruan fungsi [`verifyPin`](code.gs) dari file `code.gs` lokal ke editor Apps Script Anda lalu klik **Deploy ➔ Manage deployments ➔ Edit ➔ New version**.
+## 🔧 Pembaruan Wajib Backend Google Apps Script (Untuk PIN Ketat & Notif WA)
+Karena perubahan **verifikasi PIN** dan **pengingat WhatsApp** berjalan di sisi server Google Apps Script (data Spreadsheet & Google Drive Anda tetap **100% aman & tidak berubah**):
+1. Buka proyek Google Apps Script Anda, lalu ganti seluruh isi file `code.gs` dengan isi terbaru dari file `code.gs` di repositori ini (*JANGAN mengubah atau menjalankan ulang `setup.gs`*).
+2. Klik **Deploy ➔ Manage deployments ➔ Edit (ikon pensil) ➔ Version: New version ➔ Deploy** (URL `/exec` akan tetap sama).
+3. *(Untuk jadwal otomatis WA tiap Kamis/Jumat tanpa membuka web)*: Di aplikasi web buka menu **Notif WhatsApp**, isi Nomor WA + API Key (CallMeBot gratis / Fonnte / Webhook), centang jadwal mingguan, lalu klik **Simpan Pengaturan**. Jika muncul pemberitahuan izin trigger, buka editor Apps Script ➔ pilih fungsi `pasangJadwalNotifWAJumat` di bilah atas ➔ klik **Run** 1x untuk menyetujui izin jadwal otomatis.
