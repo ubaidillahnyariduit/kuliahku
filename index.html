@@ -1103,6 +1103,7 @@
           <div>
             <label class="block font-bold text-slate-700 mb-1">Provider Gateway WA</label>
             <select id="inputWaProvider" onchange="updateWaProviderUI()" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 font-semibold text-slate-800 outline-none focus:border-brandTeal">
+              <option value="textmebot">TextMeBot (Gratis Pribadi)</option>
               <option value="callmebot">CallMeBot (Gratis Pribadi)</option>
               <option value="fonnte">Fonnte (Token API Indonesia)</option>
               <option value="webhook">Custom Webhook JSON (WAHA/n8n)</option>
@@ -1234,7 +1235,7 @@
       berkas: [],
       waStatus: {
         configured: false,
-        provider: 'callmebot',
+        provider: 'textmebot',
         maskedPhone: '',
         hasApiKey: false,
         hasWebhookUrl: false,
@@ -2959,7 +2960,11 @@
       var labelKey = document.getElementById('labelWaApiKey');
       var webhookRow = document.getElementById('waWebhookRow');
 
-      if (provider === 'callmebot') {
+      if (provider === 'textmebot') {
+        webhookRow.classList.add('hidden');
+        labelKey.innerText = 'API Key TextMeBot (Gratis)';
+        hintEl.innerHTML = '<b>TextMeBot (Gratis):</b> Hubungkan nomor WA Anda di <i>textmebot.com</i> untuk mendapat <b>API Key</b>. Masukkan nomor WA Anda di samping (otomatis diformat menjadi <code>+62...</code> saat dikirim).';
+      } else if (provider === 'callmebot') {
         webhookRow.classList.add('hidden');
         labelKey.innerText = 'API Key CallMeBot (Gratis)';
         hintEl.innerHTML = '<b>CallMeBot (Gratis):</b> Daftarkan nomor WA Anda sekali melalui layanan CallMeBot (<i>callmebot.com/blog/free-api-whatsapp-messages/</i>) untuk mendapat <b>API Key</b> pribadi.';
@@ -2976,7 +2981,7 @@
 
     function openWaModal() {
       var st = AppState.waStatus || {};
-      document.getElementById('inputWaProvider').value = st.provider || 'callmebot';
+      document.getElementById('inputWaProvider').value = st.provider || 'textmebot';
       document.getElementById('inputWaPhone').value = '';
       document.getElementById('inputWaApiKey').value = '';
       document.getElementById('inputWaWebhookUrl').value = '';
@@ -3019,12 +3024,8 @@
       document.getElementById('modalWaConfig').classList.add('hidden');
     }
 
-    async function saveWaConfig() {
-      var btn = document.getElementById('btnSaveWaConfig');
-      btn.disabled = true;
-      btn.innerText = 'Menyimpan...';
-
-      var cfg = {
+    function readWaConfigFormInputs() {
+      return {
         provider: document.getElementById('inputWaProvider').value,
         phone: document.getElementById('inputWaPhone').value.trim(),
         apiKey: document.getElementById('inputWaApiKey').value.trim(),
@@ -3035,6 +3036,14 @@
         scheduleHour: Number(document.getElementById('inputWaScheduleHour').value),
         onlyIfPending: document.getElementById('inputWaOnlyIfPending').checked
       };
+    }
+
+    async function saveWaConfig() {
+      var btn = document.getElementById('btnSaveWaConfig');
+      btn.disabled = true;
+      btn.innerText = 'Menyimpan...';
+
+      var cfg = readWaConfigFormInputs();
 
       try {
         var res = await callApi('saveWaSettings', { config: cfg });
@@ -3045,7 +3054,7 @@
           renderActiveView();
           if (res.triggerWarning) {
             document.getElementById('waModalStatusInfo').innerText = res.triggerWarning;
-            showToast('Pengaturan WA tersimpan! Jalankan 1x pasangJadwalNotifWAJumat di Apps Script untuk jadwal otomatis.', 'info');
+            showToast('Pengaturan WA tersimpan! Jalankan 1x fungsi otorisasiIzinWA di Apps Script lalu Deploy New version.', 'info');
           } else {
             showToast(res.message || 'Pengaturan WhatsApp tersimpan!', 'success');
             closeWaModal();
@@ -3067,7 +3076,53 @@
     }
 
     async function sendWaTestNow(forceSend) {
-      if (!AppState.waStatus || !AppState.waStatus.configured) {
+      var modalEl = document.getElementById('modalWaConfig');
+      var modalOpen = modalEl && !modalEl.classList.contains('hidden');
+      var st = AppState.waStatus || {};
+
+      if (modalOpen) {
+        var formCfg = readWaConfigFormInputs();
+        var hasPhone = Boolean(formCfg.phone || st.maskedPhone);
+        var hasSecret = (formCfg.provider === 'webhook')
+          ? Boolean(formCfg.webhookUrl || st.hasWebhookUrl)
+          : Boolean(formCfg.apiKey || st.hasApiKey);
+
+        if (!hasPhone && formCfg.provider !== 'webhook') {
+          showToast('Isi Nomor WA Tujuan terlebih dahulu.', 'error');
+          return;
+        }
+        if (!hasSecret) {
+          showToast(formCfg.provider === 'webhook' ? 'Isi URL Webhook JSON terlebih dahulu.' : 'Isi API Key / Token terlebih dahulu.', 'error');
+          return;
+        }
+
+        var needsAutoSave = !st.configured ||
+          Boolean(formCfg.phone) ||
+          Boolean(formCfg.apiKey) ||
+          Boolean(formCfg.webhookUrl) ||
+          formCfg.provider !== (st.provider || '') ||
+          formCfg.introText !== (st.introText || '');
+
+        if (needsAutoSave) {
+          showToast('Menyimpan konfigurasi WA terbaru sebelum mengirim tes...', 'info');
+          try {
+            var saveRes = await callApi('saveWaSettings', { config: formCfg });
+            if (saveRes && saveRes.status === 'SUCCESS') {
+              if (saveRes.data) AppState.waStatus = Object.assign({}, AppState.waStatus, saveRes.data);
+              saveCachedCloudSnapshot();
+              updateGlobalTasksAndWaIndicators();
+              renderActiveView();
+            } else {
+              var saveErr = (saveRes && saveRes.message) ? saveRes.message : 'Gagal menyimpan pengaturan WA.';
+              showToast(saveErr, 'error');
+              return;
+            }
+          } catch (saveEx) {
+            showToast('Koneksi gagal saat menyimpan konfigurasi WhatsApp.', 'error');
+            return;
+          }
+        }
+      } else if (!AppState.waStatus || !AppState.waStatus.configured) {
         showToast('Isi nomor WA & API Key lalu klik Simpan Pengaturan terlebih dahulu (atau pakai Kirim via wa.me).', 'error');
         return;
       }
@@ -3129,10 +3184,11 @@
         toast.classList.remove('translate-y-4', 'opacity-0');
       });
 
+      var toastDuration = (type === 'error') ? 7500 : 3500;
       setTimeout(function() {
         toast.classList.add('translate-y-4', 'opacity-0');
         setTimeout(function() { toast.remove(); }, 300);
-      }, 3500);
+      }, toastDuration);
     }
   </script>
 </body>
